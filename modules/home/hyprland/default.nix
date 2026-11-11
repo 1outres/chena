@@ -29,7 +29,10 @@ let
     workspaces = {
       inherit (cfg.workspaces) keys;
     };
-    touchpad.natural_scroll = cfg.touchpad.naturalScroll;
+    touchpad = {
+      natural_scroll = cfg.touchpad.naturalScroll;
+      scroll_factor = cfg.touchpad.scrollFactor;
+    };
     style = {
       gaps_in = style.layout.gapsIn;
       gaps_out = style.layout.gapsOut;
@@ -145,10 +148,18 @@ in
       '';
     };
 
-    touchpad.naturalScroll = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether the content follows the fingers when scrolling.";
+    touchpad = {
+      naturalScroll = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether the content follows the fingers when scrolling.";
+      };
+      scrollFactor = mkOption {
+        type = types.numbers.positive;
+        default = 1;
+        example = 0.5;
+        description = "Multiplier for the scroll speed. Smaller is slower.";
+      };
     };
 
     extraLua = mkOption {

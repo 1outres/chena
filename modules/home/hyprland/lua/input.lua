@@ -11,6 +11,7 @@ hl.config({
 
         touchpad = {
             natural_scroll = settings.touchpad.natural_scroll,
+            scroll_factor  = settings.touchpad.scroll_factor,
         },
     },
 })

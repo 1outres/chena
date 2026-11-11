@@ -16,6 +16,7 @@ expect(settings.monitors[1].position, "0x0", "monitors[1].position")
 expect(settings.monitors[1].scale, 1.5, "monitors[1].scale")
 
 expect(settings.touchpad.natural_scroll, false, "touchpad.natural_scroll")
+expect(settings.touchpad.scroll_factor, 0.5, "touchpad.scroll_factor")
 
 expect(settings.cursor.name, "Adwaita", "cursor.name")
 expect(settings.cursor.size, 24, "cursor.size")

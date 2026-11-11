@@ -128,7 +128,10 @@ let
             scale = 1.5;
           }
         ];
-        touchpad.naturalScroll = false;
+        touchpad = {
+          naturalScroll = false;
+          scrollFactor = 0.5;
+        };
         extraLua.tweaks = ''
           hl.config({ general = { gaps_out = 8 } })
         '';
