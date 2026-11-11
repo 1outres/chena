@@ -33,6 +33,7 @@ let
       natural_scroll = cfg.touchpad.naturalScroll;
       scroll_factor = cfg.touchpad.scrollFactor;
     };
+    devices = lib.mapAttrs (_: device: { natural_scroll = device.naturalScroll; }) cfg.devices;
     style = {
       gaps_in = style.layout.gapsIn;
       gaps_out = style.layout.gapsOut;
@@ -162,6 +163,26 @@ in
         example = 0.5;
         description = "Multiplier for the scroll speed. Smaller is slower.";
       };
+    };
+
+    devices = mkOption {
+      type = types.attrsOf (
+        types.submodule {
+          options.naturalScroll = mkOption {
+            type = types.bool;
+            description = ''
+              Whether the content follows the fingers when scrolling with
+              this device. Mice scroll the other way by default.
+            '';
+          };
+        }
+      );
+      default = { };
+      example = lib.literalExpression ''{ "zmk-project-roba-mouse".naturalScroll = true; }'';
+      description = ''
+        Settings for one input device, keyed by the name that
+        `hyprctl devices` shows.
+      '';
     };
 
     extraLua = mkOption {

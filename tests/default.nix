@@ -138,6 +138,9 @@ let
           naturalScroll = false;
           scrollFactor = 0.5;
         };
+        devices."zmk-project-roba-mouse" = {
+          naturalScroll = true;
+        };
         extraLua.tweaks = ''
           hl.config({ general = { gaps_out = 8 } })
         '';

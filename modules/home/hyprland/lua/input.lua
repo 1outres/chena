@@ -21,3 +21,10 @@ hl.gesture({
     direction = "horizontal",
     action    = "workspace",
 })
+
+for name, device in pairs(settings.devices) do
+    hl.device({
+        name           = name,
+        natural_scroll = device.natural_scroll,
+    })
+end

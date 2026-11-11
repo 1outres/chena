@@ -17,6 +17,7 @@ expect(settings.monitors[1].scale, 1.5, "monitors[1].scale")
 
 expect(settings.touchpad.natural_scroll, false, "touchpad.natural_scroll")
 expect(settings.touchpad.scroll_factor, 0.5, "touchpad.scroll_factor")
+expect(settings.devices["zmk-project-roba-mouse"].natural_scroll, true, "devices.natural_scroll")
 
 expect(settings.cursor.name, "Adwaita", "cursor.name")
 expect(settings.cursor.size, 24, "cursor.size")
