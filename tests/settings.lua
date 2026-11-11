@@ -36,7 +36,7 @@ if not settings.programs.osd:find("/bin/swayosd%-client$") then
     error("programs.osd is not swayosd-client: " .. tostring(settings.programs.osd))
 end
 
-for _, program in ipairs({ "terminal", "menu", "shutdown", "osd", "brightness", "lock" }) do
+for _, program in ipairs({ "terminal", "menu", "shutdown", "osd", "brightness", "lock", "session_start", "session_end" }) do
     local path = settings.programs[program]
     if type(path) ~= "string" or not path:find("^/nix/store/") then
         error("programs." .. program .. " is not a store path: " .. tostring(path))

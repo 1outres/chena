@@ -244,6 +244,7 @@ in
     "fail_color=rgb(ff5555)"
     "capslock_color=rgb(ffb86c)"
     "rounding=0"
+    "dots_rounding=0"
   ];
 
   idle-config = checkContains "idle-config" [ ] ".config/hypr/hypridle.conf" [
@@ -265,9 +266,9 @@ in
     "theme=Dracula-Solid"
   ];
 
-  qt-kvantum-theme = checkContains "qt-kvantum-theme" [ ]
-    ".config/Kvantum/Dracula-Solid/Dracula-Solid.kvconfig"
-    [ "[%General]" ];
+  qt-kvantum-theme =
+    checkContains "qt-kvantum-theme" [ ] ".config/Kvantum/Dracula-Solid/Dracula-Solid.kvconfig"
+      [ "[%General]" ];
 
   qt-ct = checkLines "qt-ct" [ ] ".config/qt6ct/qt6ct.conf" [
     "style=kvantum"
@@ -344,4 +345,53 @@ in
   nixos-lock-pam =
     assert nixos.config.security.pam.services ? hyprlock;
     pkgs.writeText "chena-nixos-lock-pam" "ok";
+
+  boot-splash =
+    let
+      plymouth = nixos.config.boot.plymouth;
+    in
+    assert plymouth.enable;
+    assert plymouth.theme == "chena";
+    assert pkgs.lib.hasInfix "DeviceScale=1" plymouth.extraConfig;
+    assert pkgs.lib.hasInfix "JetBrainsMono" plymouth.font;
+    pkgs.writeText "chena-boot-splash" "ok";
+
+  boot-splash-theme =
+    let
+      theme = pkgs.lib.findFirst (
+        package: package.pname or "" == "plymouth-theme-chena"
+      ) (throw "no chena theme package") nixos.config.boot.plymouth.themePackages;
+      dir = "${theme}/share/plymouth/themes/chena";
+    in
+    pkgs.runCommand "chena-boot-splash-theme" { } ''
+      for file in chena.plymouth chena.script field.png field@2x.png bullet.png bullet@2x.png; do
+        test -s ${dir}/$file || { echo "missing $file"; exit 1; }
+      done
+      grep -qF 'ModuleName=script' ${dir}/chena.plymouth
+      # The desktop color #191a21 as 0 to 1 floats.
+      grep -qF 'Window.SetBackgroundTopColor(0.098039, 0.101961, 0.129412);' ${dir}/chena.script
+      grep -qF 'Plymouth.SetDisplayPasswordFunction' ${dir}/chena.script
+      touch $out
+    '';
+
+  boot-brightness =
+    let
+      rules = nixos.config.boot.initrd.services.udev.rules;
+    in
+    assert pkgs.lib.hasInfix ''SUBSYSTEM=="backlight"'' rules;
+    assert pkgs.lib.hasInfix "chena-fixed-brightness" rules;
+    pkgs.writeText "chena-boot-brightness" "ok";
+
+  greeter =
+    let
+      inherit (nixos.config.services.displayManager) regreet;
+    in
+    assert regreet.enable;
+    assert regreet.settings.GTK.theme_name == "Dracula";
+    assert regreet.settings.GTK.icon_theme_name == "Papirus-Dark";
+    assert pkgs.lib.hasInfix "#191a21" nixos.config.environment.etc."greetd/regreet.css".text;
+    assert pkgs.lib.any (pkgs.lib.hasInfix "chena-fixed-brightness") (
+      pkgs.lib.toList nixos.config.systemd.services.greetd.serviceConfig.ExecStartPre
+    );
+    pkgs.writeText "chena-greeter" "ok";
 }

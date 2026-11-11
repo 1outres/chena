@@ -14,6 +14,7 @@
     ./notifications.nix
     ./osd.nix
     ./lock.nix
+    ./brightness.nix
     ./hyprland
   ];
 

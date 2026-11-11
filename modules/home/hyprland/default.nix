@@ -50,6 +50,7 @@ let
     "input"
     "binds"
     "rules"
+    "session"
   ];
 
   extraModules = lib.attrNames cfg.extraLua;

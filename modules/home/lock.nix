@@ -29,12 +29,15 @@ let
   };
   screenCommand = action: "${lib.getExe screen} ${action}";
 
-  label = settings: {
-    monitor = "";
-    font_family = style.font.mono;
-    halign = "center";
-    valign = "center";
-  } // settings;
+  label =
+    settings:
+    {
+      monitor = "";
+      font_family = style.font.mono;
+      halign = "center";
+      valign = "center";
+    }
+    // settings;
 in
 {
   config = lib.mkIf config.chena.enable {
@@ -93,6 +96,7 @@ in
             fade_on_empty = false;
             dots_size = 0.25;
             dots_spacing = 0.3;
+            dots_rounding = style.layout.radius;
           }
         ];
       };
