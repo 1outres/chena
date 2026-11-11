@@ -47,6 +47,11 @@ in
           media_play_pause = "${playerctl} play-pause";
           media_previous = "${playerctl} previous";
           brightness = "${lib.getExe pkgs.brightnessctl} -e4 -n2 set";
+
+          # Hyprland 0.57 puts the workspaces of a monitor that comes back in the
+          # workspace group of its old output, so the shell would show none
+          # there. A new connection gets one group for each monitor.
+          monitor_added = "${lib.getExe' pkgs.systemd "systemctl"} --user try-restart shoji-bar-4.service";
         };
       }
 

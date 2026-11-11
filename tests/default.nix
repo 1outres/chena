@@ -223,6 +223,12 @@ in
 
   gather = checkModule "gather" [ ] "gather.lua" ./gather.lua [ ];
 
+  session = checkModule "session" [ ] "session.lua" ./session.lua [ "none" ];
+
+  session-shoji = checkModule "session-shoji" withShoji "session.lua" ./session.lua [
+    "try-restart shoji-bar-4.service"
+  ];
+
   home-clamshell = verifyConfig "home-clamshell" withClamshell;
 
   shell-unknown = rejects "shell-unknown" [ { chena.shell = "no-such-shell"; } ];

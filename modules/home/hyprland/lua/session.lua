@@ -9,3 +9,9 @@ end)
 hl.on("hyprland.shutdown", function()
     os.execute(programs.session_end)
 end)
+
+if programs.monitor_added then
+    hl.on("monitor.added", function()
+        hl.exec_cmd(programs.monitor_added)
+    end)
+end
