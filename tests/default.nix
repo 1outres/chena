@@ -63,6 +63,31 @@ let
       touch $out
     '';
 
+  # Fails unless every expected string appears somewhere in the file.
+  checkContains =
+    name: modules: path: strings:
+    let
+      home = mkHome modules;
+    in
+    pkgs.runCommand "chena-${name}" { } ''
+      file=${home.config.home-files}/${path}
+      ${pkgs.lib.concatMapStrings (string: ''
+        grep -qF -- ${pkgs.lib.escapeShellArg string} "$file" || { echo "missing in ${path}: ${string}"; exit 1; }
+      '') strings}
+      touch $out
+    '';
+
+  # Runs a jq expression that must print true for the JSON file.
+  checkJson =
+    name: modules: path: expression:
+    let
+      home = mkHome modules;
+    in
+    pkgs.runCommand "chena-${name}" { nativeBuildInputs = [ pkgs.jq ]; } ''
+      jq -e ${pkgs.lib.escapeShellArg expression} ${home.config.home-files}/${path}
+      touch $out
+    '';
+
   # An option value that fails the type check must stop evaluation.
   rejects =
     name: modules:
@@ -127,6 +152,29 @@ in
     "font-family = JetBrainsMono Nerd Font"
     "font-family = Noto Sans CJK JP"
     "background-opacity = 1"
+  ];
+
+  bar-config = checkJson "bar-config" [ ] ".config/waybar/config" ''
+    .[0]
+    | .layer == "top"
+      and .position == "top"
+      and .height == 26
+      and .["modules-left"] == ["hyprland/workspaces"]
+      and .["modules-center"] == ["clock"]
+      and .["modules-right"] == ["tray", "network", "wireplumber", "battery"]
+  '';
+
+  bar-style = checkContains "bar-style" [ ] ".config/waybar/style.css" [
+    "font-family: \"JetBrainsMono Nerd Font\", \"Noto Sans CJK JP\";"
+    "background-color: #21222c;"
+    "border-bottom: 2px solid #44475a;"
+    "border-bottom-color: #bd93f9;"
+    "color: #ff5555;"
+    "border-radius: 0;"
+  ];
+
+  bar-service = checkContains "bar-service" [ ] ".config/systemd/user/waybar.service" [
+    "WantedBy=graphical-session.target"
   ];
 
   gtk-theme = checkLines "gtk-theme" [ ] ".config/gtk-3.0/settings.ini" [

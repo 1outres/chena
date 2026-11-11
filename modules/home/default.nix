@@ -7,6 +7,7 @@
     ./cursor.nix
     ./gtk.nix
     ./terminal.nix
+    ./bar.nix
     ./hyprland
   ];
 
