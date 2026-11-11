@@ -49,6 +49,17 @@ let
       touch $out
     '';
 
+  # Runs a test of clamshell.lua against the generated file and settings.
+  checkClamshell =
+    name: modules: script:
+    let
+      hypr = "${(mkHome modules).config.home-files}/.config/hypr/chena";
+    in
+    pkgs.runCommand "chena-${name}" { nativeBuildInputs = [ pkgs.lua ]; } ''
+      lua ${script} ${hypr}/settings.lua ${hypr}/clamshell.lua
+      touch $out
+    '';
+
   # Runs the binds test against the generated bindings and settings.
   checkBinds =
     name: modules:
@@ -132,6 +143,24 @@ let
 
   withShoji = [ { chena.shell = "shoji-bar-4"; } ];
 
+  withClamshell = [
+    {
+      chena = {
+        clamshell = {
+          switch = "Apple SMC power/lid events";
+          output = "eDP-1";
+        };
+        monitors = [
+          {
+            output = "eDP-1";
+            scale = 2;
+          }
+          { output = ""; }
+        ];
+      };
+    }
+  ];
+
   customized = [
     {
       chena = {
@@ -187,6 +216,12 @@ in
   binds = checkBinds "binds" [ ];
 
   binds-shoji = checkBinds "binds-shoji" withShoji;
+
+  clamshell = checkClamshell "clamshell" withClamshell ./clamshell.lua;
+
+  clamshell-off = checkClamshell "clamshell-off" [ ] ./clamshell-off.lua;
+
+  home-clamshell = verifyConfig "home-clamshell" withClamshell;
 
   shell-unknown = rejects "shell-unknown" [ { chena.shell = "no-such-shell"; } ];
 

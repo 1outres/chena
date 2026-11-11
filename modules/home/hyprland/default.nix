@@ -26,6 +26,10 @@ let
       inherit (cfg.keyboard) layout options;
     };
     inherit (cfg) monitors;
+    clamshell = lib.mapNullable (clamshell: {
+      inherit (clamshell) switch output;
+      lid_state = "${lib.getExe' pkgs.systemd "busctl"} get-property org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager LidClosed";
+    }) cfg.clamshell;
     workspaces = {
       inherit (cfg.workspaces) keys;
     };
@@ -52,6 +56,7 @@ let
   # Load order of the core files. Later files can override earlier ones.
   coreModules = [
     "monitors"
+    "clamshell"
     "environment"
     "appearance"
     "layouts"
@@ -128,6 +133,31 @@ in
       type = types.listOf monitorType;
       default = [ { output = ""; } ];
       description = "Monitor rules, applied in order.";
+    };
+
+    clamshell = mkOption {
+      type = types.nullOr (
+        types.submodule {
+          options = {
+            switch = mkOption {
+              type = types.str;
+              example = "Lid Switch";
+              description = "Name of the lid switch, as `hyprctl devices` shows it.";
+            };
+            output = mkOption {
+              type = types.str;
+              example = "eDP-1";
+              description = "Output name of the built-in screen.";
+            };
+          };
+        }
+      );
+      default = null;
+      description = ''
+        Turns the built-in screen off when the lid closes while another
+        monitor is on, and back on when the lid opens. Without another
+        monitor, logind suspends as usual.
+      '';
     };
 
     workspaces.keys = mkOption {
