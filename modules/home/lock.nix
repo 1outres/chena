@@ -13,6 +13,8 @@ let
   loginctl = lib.getExe' pkgs.systemd "loginctl";
   hyprlock = lib.getExe config.programs.hyprlock.package;
 
+  isChena = config.chena.shell == "chena";
+
   # A bare string such as hl.dsp.dpms("off") is read as "toggle", so the
   # action has to be passed in a table. This keeps that detail in one place.
   screen = pkgs.writeShellApplication {
@@ -42,11 +44,18 @@ in
 {
   config = lib.mkIf config.chena.enable {
     # Locking goes through logind, so hypridle's lock_cmd is the one place
-    # that starts hyprlock.
-    chena.programs.lock = "${loginctl} lock-session";
+    # that shows the lock screen. The shell decides which one that is.
+    # optionalAttrs and not mkIf, since chena.programs is lazy and keeps a
+    # name that mkIf turns off.
+    chena.programs = {
+      lock = "${loginctl} lock-session";
+    }
+    // lib.optionalAttrs isChena {
+      locker = "${pidof} hyprlock || ${hyprlock}";
+    };
 
     programs.hyprlock = {
-      enable = true;
+      enable = isChena;
       settings = {
         general = {
           hide_cursor = true;
@@ -113,7 +122,7 @@ in
       enable = true;
       settings = {
         general = {
-          lock_cmd = "${pidof} hyprlock || ${hyprlock}";
+          lock_cmd = config.chena.programs.locker;
           before_sleep_cmd = "${loginctl} lock-session";
           after_sleep_cmd = screenCommand "on";
         };

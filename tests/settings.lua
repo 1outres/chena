@@ -34,8 +34,8 @@ if not settings.programs.menu:find("/bin/walker$") then
     error("programs.menu is not walker: " .. tostring(settings.programs.menu))
 end
 
-if not settings.programs.osd:find("/bin/swayosd%-client$") then
-    error("programs.osd is not swayosd-client: " .. tostring(settings.programs.osd))
+if not settings.programs.volume_up:find("/bin/swayosd%-client %-%-output%-volume raise") then
+    error("programs.volume_up is not swayosd-client: " .. tostring(settings.programs.volume_up))
 end
 
 expect(table.concat(settings.workspaces.keys), "ZXCSDFWER", "workspaces.keys")
@@ -52,7 +52,7 @@ if not settings.programs.emoji:find("/bin/walker %-%-provider symbols$") then
     error("programs.emoji is not the walker symbols: " .. tostring(settings.programs.emoji))
 end
 
-for _, program in ipairs({ "terminal", "menu", "shutdown", "power", "clipboard", "emoji", "screenshot", "screenshot_edit", "osd", "brightness", "lock", "session_start", "session_end" }) do
+for _, program in ipairs({ "terminal", "menu", "shutdown", "power", "clipboard", "emoji", "screenshot", "screenshot_edit", "volume_up", "volume_down", "volume_mute", "mic_mute", "media_next", "media_play_pause", "media_previous", "brightness", "lock", "locker", "picker", "session_start", "session_end" }) do
     local path = settings.programs[program]
     if type(path) ~= "string" or not path:find("^/nix/store/") then
         error("programs." .. program .. " is not a store path: " .. tostring(path))

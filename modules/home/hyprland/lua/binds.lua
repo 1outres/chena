@@ -69,10 +69,10 @@ hl.bind(wm .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 local repeatable = { locked = true, repeating = true }
 
-hl.bind("XF86AudioRaiseVolume", exec(programs.osd, "--output-volume raise --max-volume 100"), repeatable)
-hl.bind("XF86AudioLowerVolume", exec(programs.osd, "--output-volume lower"),                  repeatable)
-hl.bind("XF86AudioMute",        exec(programs.osd, "--output-volume mute-toggle"),            repeatable)
-hl.bind("XF86AudioMicMute",     exec(programs.osd, "--input-volume mute-toggle"),             repeatable)
+hl.bind("XF86AudioRaiseVolume", exec(programs.volume_up),   repeatable)
+hl.bind("XF86AudioLowerVolume", exec(programs.volume_down), repeatable)
+hl.bind("XF86AudioMute",        exec(programs.volume_mute), repeatable)
+hl.bind("XF86AudioMicMute",     exec(programs.mic_mute),    repeatable)
 
 -- The backlight only reaches the built-in panel. The external displays
 -- cannot be dimmed from here because apple-dcp gives Linux no DDC/CI bus
@@ -91,7 +91,12 @@ hl.bind("XF86MonBrightnessDown", setBuiltinBrightness("5%-"), repeatable)
 
 local locked = { locked = true }
 
-hl.bind("XF86AudioNext",  exec(programs.osd, "--playerctl next"),       locked)
-hl.bind("XF86AudioPause", exec(programs.osd, "--playerctl play-pause"), locked)
-hl.bind("XF86AudioPlay",  exec(programs.osd, "--playerctl play-pause"), locked)
-hl.bind("XF86AudioPrev",  exec(programs.osd, "--playerctl prev"),       locked)
+hl.bind("XF86AudioNext",  exec(programs.media_next),       locked)
+hl.bind("XF86AudioPause", exec(programs.media_play_pause), locked)
+hl.bind("XF86AudioPlay",  exec(programs.media_play_pause), locked)
+hl.bind("XF86AudioPrev",  exec(programs.media_previous),   locked)
+
+-- Only a shell that has quick settings fills this role.
+if programs.quick_settings then
+    hl.bind(app .. " + N", exec(programs.quick_settings))
+end

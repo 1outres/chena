@@ -49,6 +49,17 @@ let
       touch $out
     '';
 
+  # Runs the binds test against the generated bindings and settings.
+  checkBinds =
+    name: modules:
+    let
+      hypr = "${(mkHome modules).config.home-files}/.config/hypr/chena";
+    in
+    pkgs.runCommand "chena-${name}" { nativeBuildInputs = [ pkgs.lua ]; } ''
+      lua ${./binds.lua} ${hypr}/settings.lua ${hypr}/binds.lua
+      touch $out
+    '';
+
   # Fails unless every expected line appears as a whole line in the file.
   checkLines =
     name: modules: path: lines:
@@ -119,6 +130,8 @@ let
 
   withWallpaper = [ { chena.wallpaper = largeImage; } ];
 
+  withShoji = [ { chena.shell = "shoji-bar-4"; } ];
+
   customized = [
     {
       chena = {
@@ -171,15 +184,48 @@ in
 
   home-settings = checkSettings "home-settings" customized ./settings.lua;
 
-  binds =
+  binds = checkBinds "binds" [ ];
+
+  binds-shoji = checkBinds "binds-shoji" withShoji;
+
+  shell-unknown = rejects "shell-unknown" [ { chena.shell = "no-such-shell"; } ];
+
+  # shoji-bar-4 brings its own bar, launcher, notifications, OSD, lock screen
+  # and wallpaper, so the chena ones step aside.
+  shoji-replaces =
     let
-      home = mkHome [ ];
-      hypr = "${home.config.home-files}/.config/hypr/chena";
+      inherit (mkHome (withShoji ++ withWallpaper)) config;
     in
-    pkgs.runCommand "chena-binds" { nativeBuildInputs = [ pkgs.lua ]; } ''
-      lua ${./binds.lua} ${hypr}/settings.lua ${hypr}/binds.lua
-      touch $out
-    '';
+    assert !config.programs.waybar.enable;
+    assert !config.services.mako.enable;
+    assert !config.services.swayosd.enable;
+    assert !config.programs.hyprlock.enable;
+    assert !config.services.hyprpaper.enable;
+    assert config.services.walker.enable;
+    assert config.services.cliphist.enable;
+    assert pkgs.lib.hasSuffix "msg toggle launcher" config.chena.programs.menu;
+    assert pkgs.lib.hasSuffix "msg toggle clipboard" config.chena.programs.clipboard;
+    assert pkgs.lib.hasSuffix "msg lock" config.chena.programs.locker;
+    assert pkgs.lib.hasInfix "msg lock" config.services.hypridle.settings.general.lock_cmd;
+    pkgs.writeText "chena-shoji-replaces" "ok";
+
+  shoji-service = checkContains "shoji-service" withShoji ".config/systemd/user/shoji-bar-4.service" [
+    "/bin/shoji-bar-4"
+    "WantedBy=graphical-session.target"
+  ];
+
+  # The shell keeps its own settings file, so chena only sets the keys that
+  # make it match the desktop and leaves the rest to the shell.
+  shoji-settings =
+    let
+      activation = (mkHome (withShoji ++ withWallpaper)).config.home.activation.shojiBar4Settings.data;
+    in
+    assert pkgs.lib.hasInfix "shoji-bar-4/settings.json" activation;
+    assert pkgs.lib.hasInfix ''"seed":"#bd93f9"'' activation;
+    assert pkgs.lib.hasInfix ''"mode":"dark"'' activation;
+    assert pkgs.lib.hasInfix ''"seed_from_wallpaper":false'' activation;
+    assert pkgs.lib.hasInfix "chena-wallpaper.png" activation;
+    pkgs.writeText "chena-shoji-settings" "ok";
 
   workspaces-library = checkContains "workspaces-library" [ ] ".config/hypr/chena/workspaces.lua" [
     "chena.split.split-monitor-workspaces"

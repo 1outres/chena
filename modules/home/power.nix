@@ -15,7 +15,7 @@ let
   power = pkgs.writeShellApplication {
     name = "chena-power";
     text = ''
-      choice=$(printf '%s\n' Lock Logout Reboot Shutdown | ${cfg.programs.menu} --dmenu --placeholder Power)
+      choice=$(printf '%s\n' Lock Logout Reboot Shutdown | ${cfg.programs.picker} --dmenu --placeholder Power)
       case "$choice" in
         Lock) ${cfg.programs.lock} ;;
         Logout) ${cfg.programs.shutdown} ;;

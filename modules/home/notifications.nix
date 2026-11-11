@@ -5,7 +5,7 @@ let
   inherit (style) colors;
 in
 {
-  config = lib.mkIf config.chena.enable {
+  config = lib.mkIf (config.chena.enable && config.chena.shell == "chena") {
     chena.blurredLayers = [ "notifications" ];
 
     services.mako = {

@@ -131,3 +131,19 @@ for _, keys in ipairs({ "ALT + mouse:272", "ALT + mouse:273" }) do
         error(keys .. " is not a mouse bind")
     end
 end
+
+expectAction("XF86AudioRaiseVolume", "exec_cmd", programs.volume_up)
+expectAction("XF86AudioLowerVolume", "exec_cmd", programs.volume_down)
+expectAction("XF86AudioMute", "exec_cmd", programs.volume_mute)
+expectAction("XF86AudioMicMute", "exec_cmd", programs.mic_mute)
+expectAction("XF86AudioNext", "exec_cmd", programs.media_next)
+expectAction("XF86AudioPlay", "exec_cmd", programs.media_play_pause)
+expectAction("XF86AudioPause", "exec_cmd", programs.media_play_pause)
+expectAction("XF86AudioPrev", "exec_cmd", programs.media_previous)
+
+-- Only a shell that has quick settings gets the key.
+if programs.quick_settings then
+    expectAction("SUPER + N", "exec_cmd", programs.quick_settings)
+else
+    expectUnbound("SUPER + N")
+end

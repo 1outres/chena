@@ -19,7 +19,7 @@ let
   );
 in
 {
-  config = lib.mkIf config.chena.enable {
+  config = lib.mkIf (config.chena.enable && config.chena.shell == "chena") {
     chena.blurredLayers = [ "waybar" ];
 
     programs.waybar = {

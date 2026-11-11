@@ -6,7 +6,7 @@ in
 {
   imports = [ ../shared/wallpaper.nix ];
 
-  config = lib.mkIf (cfg.enable && cfg.wallpaper != null) {
+  config = lib.mkIf (cfg.enable && cfg.shell == "chena" && cfg.wallpaper != null) {
     services.hyprpaper = {
       enable = true;
       settings = {

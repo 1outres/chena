@@ -6,6 +6,8 @@ let
   inherit (import ../../lib/css.nix) px pt;
   border = "${px style.layout.border} solid";
   radius = px style.layout.radius;
+
+  walker = lib.getExe config.services.walker.package;
 in
 {
   config = lib.mkIf config.chena.enable {
@@ -15,10 +17,16 @@ in
 
     chena.blurredLayers = [ "walker" ];
 
+    # The emoji picker and the menus that pick from a list use Walker with
+    # either shell. optionalAttrs and not mkIf, since chena.programs is lazy
+    # and keeps a name that mkIf turns off.
     chena.programs = {
-      menu = lib.getExe config.services.walker.package;
-      clipboard = "${lib.getExe config.services.walker.package} --provider clipboard";
-      emoji = "${lib.getExe config.services.walker.package} --provider symbols";
+      picker = walker;
+      emoji = "${walker} --provider symbols";
+    }
+    // lib.optionalAttrs (config.chena.shell == "chena") {
+      menu = walker;
+      clipboard = "${walker} --provider clipboard";
     };
 
     services.walker = {
