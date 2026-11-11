@@ -22,6 +22,7 @@ hl.bind(wm  .. " + Space",     exec(programs.clipboard))
 hl.bind(app .. " + period",    exec(programs.emoji))
 
 hl.bind(app .. " + SHIFT + S", exec(programs.screenshot, "region"))
+hl.bind(app .. " + SHIFT + 4", exec(programs.screenshot, "region"))
 hl.bind(app .. " + SHIFT + A", exec(programs.screenshot_edit))
 
 local resizeStep = 40
