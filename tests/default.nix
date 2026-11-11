@@ -490,6 +490,8 @@ in
     in
     assert pkgs.lib.hasInfix "bg+:#44475a" options;
     assert pkgs.lib.hasInfix "pointer:#bd93f9" options;
+    assert pkgs.lib.hasInfix "bg:-1" options;
+    assert pkgs.lib.hasInfix "gutter:-1" options;
     pkgs.writeText "chena-cli-fzf" "ok";
 
   cli-lazygit = checkContains "cli-lazygit" withCli ".config/lazygit/config.yml" [
@@ -499,7 +501,10 @@ in
     "'#44475a'"
   ];
 
-  cli-btop = checkContains "cli-btop" [ ] ".config/btop/btop.conf" [ "color_theme = \"chena\"" ];
+  cli-btop = checkContains "cli-btop" [ ] ".config/btop/btop.conf" [
+    "color_theme = \"chena\""
+    "theme_background = False"
+  ];
 
   cli-btop-theme = checkLines "cli-btop-theme" [ ] ".config/btop/themes/chena.theme" [
     "theme[main_bg]=\"#282a36\""

@@ -64,8 +64,10 @@ in
 
     programs.delta.options.syntax-theme = style.syntax;
 
+    # -1 is the terminal background, so fzf shows through a translucent
+    # terminal the same as the shell under it.
     programs.fzf.colors = {
-      bg = colors.background;
+      bg = "-1";
       "bg+" = colors.selection;
       fg = colors.text;
       "fg+" = colors.text;
@@ -78,7 +80,7 @@ in
       spinner = colors.accent;
       header = colors.muted;
       border = colors.border;
-      gutter = colors.background;
+      gutter = "-1";
     };
 
     programs.lazygit.settings.gui.theme = {
@@ -106,7 +108,7 @@ in
       enable = true;
       settings = {
         color_theme = "chena";
-        theme_background = true;
+        theme_background = false;
         rounded_corners = style.layout.radius > 0;
       };
     };
