@@ -113,6 +113,12 @@ let
     }
   ];
 
+  largeImage = pkgs.runCommand "large-image.png" { nativeBuildInputs = [ pkgs.imagemagick ]; } ''
+    magick -size 6000x4000 xc:'#bd93f9' png:$out
+  '';
+
+  withWallpaper = [ { chena.wallpaper = largeImage; } ];
+
   customized = [
     {
       chena = {
@@ -212,8 +218,98 @@ in
       and .height == 26
       and .["modules-left"] == ["hyprland/workspaces"]
       and .["modules-center"] == ["clock"]
-      and .["modules-right"] == ["tray", "network", "wireplumber", "battery"]
+      and .["modules-right"] == ["tray", "bluetooth", "network", "wireplumber", "battery"]
+      and (.network["on-click"] | contains("nmtui"))
+      and (.bluetooth["on-click"] | contains("bluetui"))
   '';
+
+  floating-tools = checkContains "floating-tools" [ ] ".config/hypr/chena/rules.lua" [
+    "chena\\\\.floating"
+  ];
+
+  polkit-agent = checkContains "polkit-agent" [ ] ".config/systemd/user/hyprpolkitagent.service" [
+    "libexec/hyprpolkitagent"
+  ];
+
+  screenshot-editor = checkContains "screenshot-editor" [ ] ".config/satty/config.toml" [
+    "corner-roundness = 0"
+    "copy-command = \"wl-copy\""
+    "family = \"JetBrainsMono Nerd Font\""
+    "#bd93f9"
+  ];
+
+  apps-defaults = checkLines "apps-defaults" [ ] ".config/hyprland-mimeapps.list" [
+    "[Default Applications]"
+    "application/pdf=org.gnome.Papers.desktop"
+    "image/png=org.gnome.Loupe.desktop"
+    "inode/directory=org.gnome.Nautilus.desktop"
+  ];
+
+  # Nautilus, Loupe and Papers are GTK 4 apps.
+  gtk4-theme = checkContains "gtk4-theme" [ ] ".config/gtk-4.0/settings.ini" [
+    "gtk-theme-name=Dracula"
+  ];
+
+  input-method-config = checkLines "input-method-config" [ ] ".config/fcitx5/conf/classicui.conf" [
+    "Theme=chena"
+    "DarkTheme=chena"
+    "UseAccentColor=False"
+    "Font=\"JetBrainsMono Nerd Font, Noto Sans CJK JP 11\""
+  ];
+
+  input-method-theme =
+    checkLines "input-method-theme" [ ] ".local/share/fcitx5/themes/chena/theme.conf"
+      [
+        "[InputPanel/Background]"
+        "Color=#21222c"
+        "BorderColor=#44475a"
+        "BorderWidth=2"
+        "[InputPanel/Highlight]"
+        "Color=#bd93f9"
+        "HighlightCandidateColor=#282a36"
+      ];
+
+  wallpaper-desktop = checkContains "wallpaper-desktop" withWallpaper ".config/hypr/hyprpaper.conf" [
+    "path=/nix/store/"
+    "fit_mode=cover"
+  ];
+
+  wallpaper-lock = checkContains "wallpaper-lock" withWallpaper ".config/hypr/hyprlock.conf" [
+    "path=/nix/store/"
+    "brightness=0.6"
+  ];
+
+  # The image is decoded at full size for each monitor, so a huge one costs
+  # hundreds of MB. It is made just big enough to cover a 4K screen.
+  wallpaper-size =
+    let
+      image = (mkHome withWallpaper).config.chena.wallpaperImage;
+    in
+    pkgs.runCommand "chena-wallpaper-size" { nativeBuildInputs = [ pkgs.imagemagick ]; } ''
+      size=$(magick identify -format '%wx%h' ${image})
+      [ "$size" = 3240x2160 ] || { echo "wallpaper is $size"; exit 1; }
+      touch $out
+    '';
+
+  wallpaper-off =
+    assert !(mkHome [ ]).config.services.hyprpaper.enable;
+    pkgs.writeText "chena-wallpaper-off" "ok";
+
+  wallpaper-greeter =
+    let
+      inherit
+        ((nixos.extendModules { modules = withWallpaper; }).config.services.displayManager.regreet.settings)
+        background
+        ;
+    in
+    assert pkgs.lib.hasPrefix "/nix/store/" background.path;
+    assert background.fit == "Cover";
+    pkgs.writeText "chena-wallpaper-greeter" "ok";
+
+  # Nautilus needs gvfs for the trash and for removable disks.
+  nixos-file-manager =
+    assert nixos.config.services.gvfs.enable;
+    pkgs.writeText "chena-nixos-file-manager" "ok";
 
   # The workspace ids run on through the monitors, but every bar counts from 1.
   bar-workspaces = checkJson "bar-workspaces" [ ] ".config/waybar/config" ''

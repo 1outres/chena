@@ -47,7 +47,11 @@ if not settings.programs.screenshot:find("/bin/hyprshot %-%-freeze %-%-clipboard
     error("programs.screenshot is not hyprshot: " .. tostring(settings.programs.screenshot))
 end
 
-for _, program in ipairs({ "terminal", "menu", "shutdown", "power", "clipboard", "screenshot", "osd", "brightness", "lock", "session_start", "session_end" }) do
+if not settings.programs.emoji:find("/bin/walker %-%-provider symbols$") then
+    error("programs.emoji is not the walker symbols: " .. tostring(settings.programs.emoji))
+end
+
+for _, program in ipairs({ "terminal", "menu", "shutdown", "power", "clipboard", "emoji", "screenshot", "screenshot_edit", "osd", "brightness", "lock", "session_start", "session_end" }) do
     local path = settings.programs[program]
     if type(path) ~= "string" or not path:find("^/nix/store/") then
         error("programs." .. program .. " is not a store path: " .. tostring(path))

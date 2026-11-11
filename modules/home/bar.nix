@@ -35,6 +35,7 @@ in
           modules-center = [ "clock" ];
           modules-right = [
             "tray"
+            "bluetooth"
             "network"
             "wireplumber"
             "battery"
@@ -57,7 +58,18 @@ in
             spacing = style.spacing.md;
           };
 
+          bluetooth = {
+            format = "󰂯";
+            format-off = "󰂲";
+            format-disabled = "󰂲";
+            format-connected = "󰂱  {num_connections}";
+            tooltip-format-connected = "{device_enumerate}";
+            tooltip-format-enumerate-connected = "{device_alias}";
+            on-click = config.chena.programs.bluetooth;
+          };
+
           network = {
+            on-click = config.chena.programs.network;
             format-wifi = "󰤨  {essid}";
             format-ethernet = "󰈀  wired";
             format-disconnected = "󰤭  offline";
@@ -141,12 +153,15 @@ in
 
         #clock,
         #tray,
+        #bluetooth,
         #network,
         #wireplumber,
         #battery {
           padding: 0 ${px style.spacing.lg};
         }
 
+        #bluetooth.off,
+        #bluetooth.disabled,
         #network.disconnected,
         #wireplumber.muted {
           color: ${colors.muted};

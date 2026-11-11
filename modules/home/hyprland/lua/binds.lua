@@ -19,8 +19,10 @@ hl.bind(app .. " + SHIFT + M", exec(programs.shutdown))
 hl.bind(app .. " + W",         hl.dsp.window.close())
 hl.bind(app .. " + F",         hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 hl.bind(wm  .. " + Space",     exec(programs.clipboard))
+hl.bind(app .. " + period",    exec(programs.emoji))
 
 hl.bind(app .. " + SHIFT + S", exec(programs.screenshot, "region"))
+hl.bind(app .. " + SHIFT + A", exec(programs.screenshot_edit))
 
 local resizeStep = 40
 

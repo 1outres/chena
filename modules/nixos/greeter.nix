@@ -34,6 +34,12 @@ in
       settings = {
         GTK.application_prefer_dark_theme = true;
         widget.clock.format = "%a %d %b  %H:%M";
+      }
+      // lib.optionalAttrs (cfg.wallpaper != null) {
+        background = {
+          path = "${cfg.wallpaperImage}";
+          fit = "Cover";
+        };
       };
 
       extraCss = ''

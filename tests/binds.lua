@@ -83,6 +83,8 @@ expectAction("SUPER + W", "window.close")
 expectField("SUPER + F", "window.fullscreen", "mode", "fullscreen")
 
 expectAction("SUPER + SHIFT + S", "exec_cmd", programs.screenshot .. " region")
+expectAction("SUPER + SHIFT + A", "exec_cmd", programs.screenshot_edit)
+expectAction("SUPER + period", "exec_cmd", programs.emoji)
 
 for _, keys in ipairs({ "Print", "SHIFT + Print", "SUPER + Print", "SUPER + R", "SUPER + C", "SUPER + M", "SUPER + V", "SUPER + P", "SUPER + J", "SUPER + S" }) do
     expectUnbound(keys)

@@ -14,6 +14,7 @@ in
         size = style.fontSize.small;
       };
       gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
+      gtk4.theme = style.gtk;
     };
 
     # libadwaita apps ignore the GTK theme and read this instead.

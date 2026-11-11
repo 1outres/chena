@@ -16,6 +16,7 @@ in
     chena.programs = {
       menu = lib.getExe config.services.walker.package;
       clipboard = "${lib.getExe config.services.walker.package} --provider clipboard";
+      emoji = "${lib.getExe config.services.walker.package} --provider symbols";
     };
 
     services.walker = {

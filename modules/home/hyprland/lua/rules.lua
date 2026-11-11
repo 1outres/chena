@@ -27,3 +27,12 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
+
+hl.window_rule({
+    name  = "float-chena-tools",
+    match = { class = "^chena\\.floating$" },
+
+    float  = true,
+    center = true,
+    size   = "900 600",
+})

@@ -54,10 +54,17 @@ in
         };
 
         background = [
-          {
-            monitor = "";
-            color = colors.desktop;
-          }
+          (
+            {
+              monitor = "";
+              color = colors.desktop;
+            }
+            // lib.optionalAttrs (config.chena.wallpaper != null) {
+              path = "${config.chena.wallpaperImage}";
+              # Darker, so the clock can be read on a bright image.
+              brightness = 0.6;
+            }
+          )
         ];
 
         label = [
@@ -69,7 +76,7 @@ in
           })
           (label {
             text = "cmd[update:60000] date '+%A %d %B'";
-            color = colors.muted;
+            color = colors.text;
             font_size = style.fontSize.large;
             position = "0, 70";
           })

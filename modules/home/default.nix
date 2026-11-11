@@ -15,6 +15,11 @@
     ./osd.nix
     ./lock.nix
     ./power.nix
+    ./polkit.nix
+    ./tools.nix
+    ./apps.nix
+    ./input-method.nix
+    ./wallpaper.nix
     ./screenshot.nix
     ./brightness.nix
     ./hyprland
