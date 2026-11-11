@@ -11,6 +11,8 @@ in
     # results, and both stay running so the launcher opens at once.
     services.elephant.enable = true;
 
+    chena.programs.menu = lib.getExe config.services.walker.package;
+
     services.walker = {
       enable = true;
       systemd.enable = true;

@@ -195,6 +195,30 @@ in
     "elephant.service"
   ];
 
+  notification-config = checkLines "notification-config" [ ] ".config/mako/config" [
+    "font=JetBrainsMono Nerd Font, Noto Sans CJK JP 10"
+    "background-color=#21222c"
+    "text-color=#f8f8f2"
+    "border-color=#44475a"
+    "border-size=2"
+    "border-radius=0"
+    "[urgency=critical]"
+    "border-color=#ff5555"
+    "default-timeout=0"
+  ];
+
+  osd-style = checkContains "osd-style" [ ] ".config/swayosd/style.css" [
+    "background: #21222c;"
+    "border: 2px solid #44475a;"
+    "background: #bd93f9;"
+    "border-radius: 0;"
+  ];
+
+  osd-service = checkContains "osd-service" [ ] ".config/systemd/user/swayosd.service" [
+    "--style"
+    "swayosd/style.css"
+  ];
+
   gtk-theme = checkLines "gtk-theme" [ ] ".config/gtk-3.0/settings.ini" [
     "gtk-theme-name=Dracula"
     "gtk-application-prefer-dark-theme=1"

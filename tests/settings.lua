@@ -32,7 +32,11 @@ if not settings.programs.menu:find("/bin/walker$") then
     error("programs.menu is not walker: " .. tostring(settings.programs.menu))
 end
 
-for _, program in ipairs({ "terminal", "menu", "shutdown", "wpctl", "brightnessctl", "playerctl" }) do
+if not settings.programs.osd:find("/bin/swayosd%-client$") then
+    error("programs.osd is not swayosd-client: " .. tostring(settings.programs.osd))
+end
+
+for _, program in ipairs({ "terminal", "menu", "shutdown", "osd", "brightness" }) do
     local path = settings.programs[program]
     if type(path) ~= "string" or not path:find("^/nix/store/") then
         error("programs." .. program .. " is not a store path: " .. tostring(path))

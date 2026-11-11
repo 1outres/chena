@@ -21,14 +21,7 @@ let
   # The Lua files read every value that Nix decides from this one module, so
   # commands come from the Nix store and options reach Lua unchanged.
   settings = {
-    programs = {
-      terminal = lib.getExe config.programs.ghostty.package;
-      menu = lib.getExe config.services.walker.package;
-      shutdown = lib.getExe pkgs.hyprshutdown;
-      wpctl = lib.getExe' pkgs.wireplumber "wpctl";
-      brightnessctl = lib.getExe pkgs.brightnessctl;
-      playerctl = lib.getExe pkgs.playerctl;
-    };
+    inherit (cfg) programs;
     cursor = {
       inherit (cfg.cursor) name size;
     };
@@ -137,6 +130,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    chena.programs.shutdown = lib.getExe pkgs.hyprshutdown;
+
     wayland.windowManager.hyprland = {
       enable = true;
 

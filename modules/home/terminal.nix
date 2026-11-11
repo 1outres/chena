@@ -10,6 +10,8 @@ let
 in
 {
   config = lib.mkIf config.chena.enable {
+    chena.programs.terminal = lib.getExe config.programs.ghostty.package;
+
     programs.ghostty = {
       enable = true;
       package = pkgs.ghostty;

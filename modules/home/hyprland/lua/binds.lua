@@ -37,18 +37,19 @@ end
 
 local repeatable = { locked = true, repeating = true }
 
-hl.bind("XF86AudioRaiseVolume",  exec(programs.wpctl, "set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), repeatable)
-hl.bind("XF86AudioLowerVolume",  exec(programs.wpctl, "set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      repeatable)
-hl.bind("XF86AudioMute",         exec(programs.wpctl, "set-mute @DEFAULT_AUDIO_SINK@ toggle"),     repeatable)
-hl.bind("XF86AudioMicMute",      exec(programs.wpctl, "set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   repeatable)
--- brightnessctl only reaches the built-in panel's backlight. The external
--- displays cannot be dimmed from here because apple-dcp gives Linux no
--- DDC/CI bus for them.
+hl.bind("XF86AudioRaiseVolume", exec(programs.osd, "--output-volume raise --max-volume 100"), repeatable)
+hl.bind("XF86AudioLowerVolume", exec(programs.osd, "--output-volume lower"),                  repeatable)
+hl.bind("XF86AudioMute",        exec(programs.osd, "--output-volume mute-toggle"),            repeatable)
+hl.bind("XF86AudioMicMute",     exec(programs.osd, "--input-volume mute-toggle"),             repeatable)
+
+-- The backlight only reaches the built-in panel. The external displays
+-- cannot be dimmed from here because apple-dcp gives Linux no DDC/CI bus
+-- for them.
 local function setBuiltinBrightness(step)
     return function()
         local monitor = hl.get_active_monitor()
         if monitor and monitor.name:find("^eDP%-") then
-            hl.exec_cmd(programs.brightnessctl .. " -e4 -n2 set " .. step)
+            hl.exec_cmd(programs.brightness .. " " .. step)
         end
     end
 end
@@ -58,7 +59,7 @@ hl.bind("XF86MonBrightnessDown", setBuiltinBrightness("5%-"), repeatable)
 
 local locked = { locked = true }
 
-hl.bind("XF86AudioNext",  exec(programs.playerctl, "next"),       locked)
-hl.bind("XF86AudioPause", exec(programs.playerctl, "play-pause"), locked)
-hl.bind("XF86AudioPlay",  exec(programs.playerctl, "play-pause"), locked)
-hl.bind("XF86AudioPrev",  exec(programs.playerctl, "previous"),   locked)
+hl.bind("XF86AudioNext",  exec(programs.osd, "--playerctl next"),       locked)
+hl.bind("XF86AudioPause", exec(programs.osd, "--playerctl play-pause"), locked)
+hl.bind("XF86AudioPlay",  exec(programs.osd, "--playerctl play-pause"), locked)
+hl.bind("XF86AudioPrev",  exec(programs.osd, "--playerctl prev"),       locked)
