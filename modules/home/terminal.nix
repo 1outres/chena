@@ -20,7 +20,7 @@ in
           style.font.mono
           style.font.cjk
         ];
-        font-size = style.font.size;
+        font-size = style.fontSize.normal;
 
         background = style.colors.background;
         foreground = style.colors.text;
@@ -31,8 +31,8 @@ in
 
         background-opacity = 1;
         background-blur = false;
-        window-padding-x = 6;
-        window-padding-y = 6;
+        window-padding-x = style.spacing.md;
+        window-padding-y = style.spacing.md;
       };
     };
   };

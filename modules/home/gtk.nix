@@ -10,7 +10,7 @@ in
       theme = style.gtk;
       font = {
         name = style.font.mono;
-        size = style.font.size - 1;
+        size = style.fontSize.small;
       };
       gtk3.extraConfig.gtk-application-prefer-dark-theme = 1;
     };

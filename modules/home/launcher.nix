@@ -2,8 +2,10 @@
 
 let
   inherit (config.chena) style;
-  inherit (style) colors;
-  border = "${toString style.layout.border}px solid";
+  inherit (style) colors spacing fontSize;
+  inherit (import ../../lib/css.nix) px pt;
+  border = "${px style.layout.border} solid";
+  radius = px style.layout.radius;
 in
 {
   config = lib.mkIf config.chena.enable {
@@ -29,23 +31,23 @@ in
           * {
             all: unset;
             font-family: "${style.font.mono}", "${style.font.cjk}";
-            font-size: ${toString style.font.size}pt;
+            font-size: ${pt fontSize.normal};
             color: ${colors.text};
           }
 
           popover {
             background: ${colors.surface};
             border: ${border} ${colors.border};
-            border-radius: 0;
-            padding: 6px;
+            border-radius: ${radius};
+            padding: ${px spacing.md};
           }
 
           .normal-icons {
-            -gtk-icon-size: 16px;
+            -gtk-icon-size: ${px style.icon.small};
           }
 
           .large-icons {
-            -gtk-icon-size: 32px;
+            -gtk-icon-size: ${px style.icon.large};
           }
 
           scrollbar {
@@ -55,15 +57,15 @@ in
           .box-wrapper {
             background: ${colors.surface};
             border: ${border} ${colors.border};
-            border-radius: 0;
-            padding: 12px;
+            border-radius: ${radius};
+            padding: ${px spacing.lg};
           }
 
           .input {
             background: ${colors.background};
             caret-color: ${colors.accent};
-            padding: 8px 10px;
-            margin-bottom: 8px;
+            padding: ${px spacing.md} ${px spacing.lg};
+            margin-bottom: ${px spacing.md};
           }
 
           .input placeholder,
@@ -77,7 +79,7 @@ in
           }
 
           .item-box {
-            padding: 6px 10px;
+            padding: ${px spacing.sm} ${px spacing.md};
             border-left: ${border} transparent;
           }
 
@@ -88,43 +90,43 @@ in
           }
 
           .item-subtext {
-            font-size: ${toString (style.font.size - 2)}pt;
+            font-size: ${pt fontSize.small};
             color: ${colors.muted};
           }
 
           .item-quick-activation {
             color: ${colors.accent};
-            padding: 0 6px;
+            padding: 0 ${px spacing.md};
           }
 
           .item-image-text {
-            font-size: 24px;
+            font-size: ${pt fontSize.xlarge};
           }
 
           .preview {
             border: ${border} ${colors.border};
-            border-radius: 0;
+            border-radius: ${radius};
           }
 
           .calc .item-text {
-            font-size: 20px;
+            font-size: ${pt fontSize.large};
           }
 
           .keybinds {
-            padding-top: 8px;
+            padding-top: ${px spacing.md};
             border-top: ${border} ${colors.border};
-            font-size: ${toString (style.font.size - 2)}pt;
+            font-size: ${pt fontSize.small};
             color: ${colors.muted};
           }
 
           .keybind-label {
-            padding: 0 4px;
-            border: 1px solid ${colors.muted};
-            border-radius: 0;
+            padding: 0 ${px spacing.sm};
+            border: ${px style.layout.hairline} solid ${colors.muted};
+            border-radius: ${radius};
           }
 
           .error {
-            padding: 8px;
+            padding: ${px spacing.md};
             background: ${colors.error};
             color: ${colors.background};
           }

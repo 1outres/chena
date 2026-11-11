@@ -18,17 +18,20 @@ in
     theme = lib.mkOption {
       type = lib.types.enum (lib.attrNames themes);
       default = "dracula";
-      description = "Color theme. Each file in `themes/` is one theme.";
+      description = ''
+        Color theme. Each file in `themes/` is one theme. Set the same theme
+        in the NixOS and the Home Manager configuration.
+      '';
     };
 
     style = lib.mkOption {
       type = lib.types.attrs;
       readOnly = true;
-      internal = true;
       description = ''
         Design tokens that every component reads, so they all share the same
-        colors, fonts and shapes. Colors come from the theme. Fonts and
-        layout are the same for every theme.
+        colors, fonts, sizes and shapes. Other modules can read them too, to
+        match the desktop. Colors come from the theme. Everything else is the
+        same for every theme.
       '';
     };
   };
@@ -42,14 +45,39 @@ in
     font = {
       mono = "JetBrainsMono Nerd Font";
       cjk = "Noto Sans CJK JP";
-      size = 11;
+    };
+
+    # Points.
+    fontSize = {
+      small = 10;
+      normal = 11;
+      large = 14;
+      xlarge = 20;
+      display = 64;
+    };
+
+    # Pixels, on a 4 pixel grid.
+    spacing = {
+      xs = 2;
+      sm = 4;
+      md = 8;
+      lg = 12;
+      xl = 16;
+    };
+
+    # Pixels.
+    icon = {
+      small = 16;
+      large = 32;
     };
 
     layout = {
       gapsIn = 2;
       gapsOut = 4;
       border = 2;
+      hairline = 1;
       radius = 0;
+      progress = 6;
     };
   };
 }

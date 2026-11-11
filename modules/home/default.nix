@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./style.nix
+    ../shared/style.nix
     ./fonts.nix
     ./cursor.nix
     ./gtk.nix

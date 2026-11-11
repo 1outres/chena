@@ -3,6 +3,7 @@
 let
   inherit (config.chena) style;
   inherit (style) colors;
+  inherit (import ../../lib/css.nix) px pt;
 in
 {
   config = lib.mkIf config.chena.enable {
@@ -38,8 +39,8 @@ in
           };
 
           tray = {
-            icon-size = 14;
-            spacing = 8;
+            icon-size = style.icon.small;
+            spacing = style.spacing.md;
           };
 
           network = {
@@ -81,21 +82,21 @@ in
       style = ''
         * {
           font-family: "${style.font.mono}", "${style.font.cjk}";
-          font-size: ${toString style.font.size}pt;
+          font-size: ${pt style.fontSize.normal};
           border: none;
-          border-radius: 0;
+          border-radius: ${px style.layout.radius};
           min-height: 0;
         }
 
         window#waybar {
           background-color: ${colors.surface};
           color: ${colors.text};
-          border-bottom: ${toString style.layout.border}px solid ${colors.border};
+          border-bottom: ${px style.layout.border} solid ${colors.border};
         }
 
         tooltip {
           background-color: ${colors.surface};
-          border: ${toString style.layout.border}px solid ${colors.border};
+          border: ${px style.layout.border} solid ${colors.border};
         }
 
         tooltip label {
@@ -103,10 +104,10 @@ in
         }
 
         #workspaces button {
-          padding: 0 8px;
+          padding: 0 ${px style.spacing.md};
           color: ${colors.muted};
           background: transparent;
-          border-bottom: ${toString style.layout.border}px solid transparent;
+          border-bottom: ${px style.layout.border} solid transparent;
           box-shadow: none;
           text-shadow: none;
         }
@@ -129,7 +130,7 @@ in
         #network,
         #wireplumber,
         #battery {
-          padding: 0 10px;
+          padding: 0 ${px style.spacing.lg};
         }
 
         #network.disconnected,

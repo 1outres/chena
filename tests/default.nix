@@ -170,7 +170,7 @@ in
     "border-bottom: 2px solid #44475a;"
     "border-bottom-color: #bd93f9;"
     "color: #ff5555;"
-    "border-radius: 0;"
+    "border-radius: 0px;"
   ];
 
   bar-service = checkContains "bar-service" [ ] ".config/systemd/user/waybar.service" [
@@ -187,7 +187,7 @@ in
     "background: #21222c;"
     "border: 2px solid #44475a;"
     "border-left: 2px solid #bd93f9;"
-    "border-radius: 0;"
+    "border-radius: 0px;"
   ];
 
   launcher-services = checkContains "launcher-services" [ ] ".config/systemd/user/walker.service" [
@@ -211,7 +211,7 @@ in
     "background: #21222c;"
     "border: 2px solid #44475a;"
     "background: #bd93f9;"
-    "border-radius: 0;"
+    "border-radius: 0px;"
   ];
 
   osd-service = checkContains "osd-service" [ ] ".config/systemd/user/swayosd.service" [
@@ -245,6 +245,29 @@ in
   ];
 
   nixos-eval = pkgs.writeText "chena-nixos-eval" nixos.config.system.build.toplevel.drvPath;
+
+  # The tokens are public so that other modules, on either side, can match
+  # the desktop. Both sides must build the same tokens.
+  style-public =
+    let
+      home = (mkHome [ ]).config.chena.style;
+      system = nixos.config.chena.style;
+    in
+    assert home == system;
+    assert system.colors.accent == "#bd93f9";
+    assert system.spacing.md == 8;
+    assert system.fontSize.normal == 11;
+    pkgs.writeText "chena-style-public" "ok";
+
+  spacing-used = checkLines "spacing-used" [ ] ".config/mako/config" [
+    "padding=12"
+    "font=JetBrainsMono Nerd Font, Noto Sans CJK JP 10"
+  ];
+
+  terminal-spacing = checkLines "terminal-spacing" [ ] ".config/ghostty/config" [
+    "window-padding-x = 8"
+    "window-padding-y = 8"
+  ];
 
   # hyprlock checks the password through PAM and cannot unlock without it.
   nixos-lock-pam =

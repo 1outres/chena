@@ -61,13 +61,13 @@ in
           (label {
             text = "cmd[update:1000] date +%H:%M";
             color = colors.text;
-            font_size = 72;
+            font_size = style.fontSize.display;
             position = "0, 140";
           })
           (label {
             text = "cmd[update:60000] date '+%A %d %B'";
             color = colors.muted;
-            font_size = style.font.size + 3;
+            font_size = style.fontSize.large;
             position = "0, 70";
           })
         ];

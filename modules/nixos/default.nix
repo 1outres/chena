@@ -10,6 +10,8 @@ let
   sessions = config.services.displayManager.sessionData.desktops;
 in
 {
+  imports = [ ../shared/style.nix ];
+
   options.chena.enable = lib.mkEnableOption "the chena desktop";
 
   config = lib.mkIf cfg.enable {

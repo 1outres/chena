@@ -8,7 +8,9 @@
 let
   inherit (config.chena) style;
   inherit (style) colors;
-  border = "${toString style.layout.border}px solid";
+  inherit (import ../../lib/css.nix) px;
+  border = "${px style.layout.border} solid";
+  radius = px style.layout.radius;
 
   osd = lib.getExe' config.services.swayosd.package "swayosd-client";
 
@@ -47,11 +49,11 @@ in
       window#osd {
         background: ${colors.surface};
         border: ${border} ${colors.border};
-        border-radius: 0;
+        border-radius: ${radius};
       }
 
       window#osd #container {
-        margin: 12px 16px;
+        margin: ${px style.spacing.lg} ${px style.spacing.xl};
       }
 
       window#osd image,
@@ -66,8 +68,8 @@ in
 
       window#osd progressbar,
       window#osd segmentedprogress {
-        min-height: 6px;
-        border-radius: 0;
+        min-height: ${px style.layout.progress};
+        border-radius: ${radius};
         background: transparent;
         border: none;
       }
@@ -75,7 +77,7 @@ in
       window#osd trough,
       window#osd segment {
         min-height: inherit;
-        border-radius: 0;
+        border-radius: ${radius};
         border: none;
         background: ${colors.border};
       }
@@ -83,13 +85,13 @@ in
       window#osd progress,
       window#osd segment.active {
         min-height: inherit;
-        border-radius: 0;
+        border-radius: ${radius};
         border: none;
         background: ${colors.accent};
       }
 
       window#osd segment {
-        margin-left: 4px;
+        margin-left: ${px style.spacing.sm};
       }
 
       window#osd segment:first-child {
