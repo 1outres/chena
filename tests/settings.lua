@@ -28,6 +28,10 @@ expect(settings.style.colors.active_border, "rgb(bd93f9)", "style.colors.active_
 expect(settings.style.colors.inactive_border, "rgb(44475a)", "style.colors.inactive_border")
 expect(settings.style.colors.desktop, "rgb(191a21)", "style.colors.desktop")
 
+if not settings.programs.menu:find("/bin/walker$") then
+    error("programs.menu is not walker: " .. tostring(settings.programs.menu))
+end
+
 for _, program in ipairs({ "terminal", "menu", "shutdown", "wpctl", "brightnessctl", "playerctl" }) do
     local path = settings.programs[program]
     if type(path) ~= "string" or not path:find("^/nix/store/") then

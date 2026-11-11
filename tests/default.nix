@@ -177,6 +177,24 @@ in
     "WantedBy=graphical-session.target"
   ];
 
+  launcher-config = checkLines "launcher-config" [ ] ".config/walker/config.toml" [
+    "theme = \"chena\""
+    "close_when_open = true"
+  ];
+
+  launcher-style = checkContains "launcher-style" [ ] ".config/walker/themes/chena/style.css" [
+    "font-family: \"JetBrainsMono Nerd Font\", \"Noto Sans CJK JP\";"
+    "background: #21222c;"
+    "border: 2px solid #44475a;"
+    "border-left: 2px solid #bd93f9;"
+    "border-radius: 0;"
+  ];
+
+  launcher-services = checkContains "launcher-services" [ ] ".config/systemd/user/walker.service" [
+    "--gapplication-service"
+    "elephant.service"
+  ];
+
   gtk-theme = checkLines "gtk-theme" [ ] ".config/gtk-3.0/settings.ini" [
     "gtk-theme-name=Dracula"
     "gtk-application-prefer-dark-theme=1"

@@ -23,7 +23,7 @@ let
   settings = {
     programs = {
       terminal = lib.getExe config.programs.ghostty.package;
-      menu = lib.getExe pkgs.hyprlauncher;
+      menu = lib.getExe config.services.walker.package;
       shutdown = lib.getExe pkgs.hyprshutdown;
       wpctl = lib.getExe' pkgs.wireplumber "wpctl";
       brightnessctl = lib.getExe pkgs.brightnessctl;

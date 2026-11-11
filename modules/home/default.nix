@@ -8,6 +8,7 @@
     ./gtk.nix
     ./terminal.nix
     ./bar.nix
+    ./launcher.nix
     ./hyprland
   ];
 
