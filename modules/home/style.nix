@@ -36,6 +36,9 @@ in
   config.chena.style = {
     inherit (theme) colors terminal gtk;
 
+    # The same colors as rgb(RRGGBB), the form that Hyprland and its tools read.
+    hyprColors = lib.mapAttrs (_: color: "rgb(${lib.removePrefix "#" color})") theme.colors;
+
     font = {
       mono = "JetBrainsMono Nerd Font";
       cjk = "Noto Sans CJK JP";

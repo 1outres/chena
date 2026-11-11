@@ -15,6 +15,9 @@ in
   config = lib.mkIf cfg.enable {
     programs.hyprland.enable = true;
 
+    # Adds the PAM service that hyprlock checks the password with.
+    programs.hyprlock.enable = true;
+
     # Start the session from the files that the Hyprland module registers, so
     # this keeps working when Hyprland changes how it should be launched.
     services.greetd = {

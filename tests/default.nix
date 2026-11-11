@@ -219,10 +219,35 @@ in
     "swayosd/style.css"
   ];
 
+  lock-config = checkContains "lock-config" [ ] ".config/hypr/hyprlock.conf" [
+    "color=rgb(191a21)"
+    "font_family=JetBrainsMono Nerd Font"
+    "outer_color=rgb(44475a)"
+    "inner_color=rgb(21222c)"
+    "check_color=rgb(bd93f9)"
+    "fail_color=rgb(ff5555)"
+    "capslock_color=rgb(ffb86c)"
+    "rounding=0"
+  ];
+
+  idle-config = checkContains "idle-config" [ ] ".config/hypr/hypridle.conf" [
+    "lock_cmd="
+    "before_sleep_cmd="
+    "timeout=300"
+    "timeout=330"
+    "chena-screen off"
+    "chena-screen on"
+  ];
+
   gtk-theme = checkLines "gtk-theme" [ ] ".config/gtk-3.0/settings.ini" [
     "gtk-theme-name=Dracula"
     "gtk-application-prefer-dark-theme=1"
   ];
 
   nixos-eval = pkgs.writeText "chena-nixos-eval" nixos.config.system.build.toplevel.drvPath;
+
+  # hyprlock checks the password through PAM and cannot unlock without it.
+  nixos-lock-pam =
+    assert nixos.config.security.pam.services ? hyprlock;
+    pkgs.writeText "chena-nixos-lock-pam" "ok";
 }

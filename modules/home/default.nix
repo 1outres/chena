@@ -11,6 +11,7 @@
     ./launcher.nix
     ./notifications.nix
     ./osd.nix
+    ./lock.nix
     ./hyprland
   ];
 

@@ -15,9 +15,6 @@ let
 
   toLuaModule = value: "return ${toLua value}\n";
 
-  # Hyprland wants rgb(RRGGBB), the theme stores #RRGGBB.
-  hyprColor = color: "rgb(${lib.removePrefix "#" color})";
-
   # The Lua files read every value that Nix decides from this one module, so
   # commands come from the Nix store and options reach Lua unchanged.
   settings = {
@@ -36,9 +33,9 @@ let
       border_size = style.layout.border;
       rounding = style.layout.radius;
       colors = {
-        active_border = hyprColor style.colors.accent;
-        inactive_border = hyprColor style.colors.border;
-        desktop = hyprColor style.colors.desktop;
+        active_border = style.hyprColors.accent;
+        inactive_border = style.hyprColors.border;
+        desktop = style.hyprColors.desktop;
       };
     };
   };
