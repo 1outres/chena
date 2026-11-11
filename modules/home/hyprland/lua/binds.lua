@@ -1,40 +1,68 @@
-local programs = require("chena.settings").programs
+local settings = require("chena.settings")
+local split = require("chena.split.split-monitor-workspaces")
 
-local mainMod = "SUPER"
+local programs = settings.programs
 
-hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(programs.terminal))
-hl.bind(mainMod .. " + C", hl.dsp.window.close())
-hl.bind(mainMod .. " + M", hl.dsp.exec_cmd(programs.shutdown))
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd(programs.lock))
-hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(programs.menu))
-hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
-
-hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
-
-for i = 1, 10 do
-    -- Workspace 10 sits on the 0 key.
-    local key = i % 10
-    hl.bind(mainMod .. " + " .. key,         hl.dsp.focus({ workspace = i }))
-    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
-end
-
-hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
-
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
-
-hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
-hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+-- SUPER starts apps and controls the system. ALT controls the windows.
+local app = "SUPER"
+local wm = "ALT"
 
 local function exec(...)
     return hl.dsp.exec_cmd(table.concat({ ... }, " "))
 end
+
+hl.bind(app .. " + Q",         exec(programs.terminal))
+hl.bind(app .. " + Space",     exec(programs.menu))
+hl.bind(app .. " + L",         exec(programs.lock))
+hl.bind(app .. " + Escape",    exec(programs.power))
+hl.bind(app .. " + SHIFT + M", exec(programs.shutdown))
+hl.bind(app .. " + W",         hl.dsp.window.close())
+hl.bind(app .. " + F",         hl.dsp.window.fullscreen({ mode = "fullscreen" }))
+hl.bind(wm  .. " + Space",     exec(programs.clipboard))
+
+hl.bind(app .. " + SHIFT + S", exec(programs.screenshot, "region"))
+
+local resizeStep = 40
+
+local directions = {
+    H = { name = "left",  x = -resizeStep, y = 0 },
+    J = { name = "down",  x = 0,           y = resizeStep },
+    K = { name = "up",    x = 0,           y = -resizeStep },
+    L = { name = "right", x = resizeStep,  y = 0 },
+}
+
+for key, direction in pairs(directions) do
+    hl.bind(wm .. " + " .. key,           hl.dsp.focus({ direction = direction.name }))
+    hl.bind(wm .. " + SHIFT + " .. key,   hl.dsp.window.move({ direction = direction.name }))
+    hl.bind(wm .. " + CTRL + " .. key,
+        hl.dsp.window.resize({ x = direction.x, y = direction.y, relative = true }),
+        { repeating = true })
+end
+
+hl.bind(wm .. " + T", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(wm .. " + B", hl.dsp.layout("togglesplit"))
+hl.bind(wm .. " + P", hl.dsp.window.pseudo())
+hl.bind(wm .. " + I", hl.dsp.window.center())
+
+for index, letter in ipairs(settings.workspaces.keys) do
+    -- Workspace 10 sits on the 0 key.
+    for _, key in ipairs({ letter, index % 10 }) do
+        hl.bind(wm .. " + " .. key,         split.workspace(tostring(index)))
+        hl.bind(wm .. " + SHIFT + " .. key, split.move_to_workspace(tostring(index)))
+    end
+end
+
+hl.bind(wm .. " + left",  split.cycle_workspaces("prev"))
+hl.bind(wm .. " + right", split.cycle_workspaces("next"))
+
+hl.bind(wm .. " + A",         hl.dsp.workspace.toggle_special("magic"))
+hl.bind(wm .. " + SHIFT + A", hl.dsp.window.move({ workspace = "special:magic" }))
+
+hl.bind(wm .. " + mouse_down", hl.dsp.focus({ workspace = "m+1" }))
+hl.bind(wm .. " + mouse_up",   hl.dsp.focus({ workspace = "m-1" }))
+
+hl.bind(wm .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
+hl.bind(wm .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 local repeatable = { locked = true, repeating = true }
 

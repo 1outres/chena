@@ -13,7 +13,10 @@ in
     # results, and both stay running so the launcher opens at once.
     services.elephant.enable = true;
 
-    chena.programs.menu = lib.getExe config.services.walker.package;
+    chena.programs = {
+      menu = lib.getExe config.services.walker.package;
+      clipboard = "${lib.getExe config.services.walker.package} --provider clipboard";
+    };
 
     services.walker = {
       enable = true;

@@ -159,7 +159,39 @@ in
 
   home-settings = checkSettings "home-settings" customized ./settings.lua;
 
+  binds =
+    let
+      home = mkHome [ ];
+      hypr = "${home.config.home-files}/.config/hypr/chena";
+    in
+    pkgs.runCommand "chena-binds" { nativeBuildInputs = [ pkgs.lua ]; } ''
+      lua ${./binds.lua} ${hypr}/settings.lua ${hypr}/binds.lua
+      touch $out
+    '';
+
+  workspaces-library = checkContains "workspaces-library" [ ] ".config/hypr/chena/workspaces.lua" [
+    "chena.split.split-monitor-workspaces"
+    "workspace_count = #settings.workspaces.keys"
+    "restore_workspaces_on_monitor_reconnect = true"
+  ];
+
+  power-menu =
+    let
+      power = (mkHome [ ]).config.chena.programs.power;
+    in
+    pkgs.runCommand "chena-power-menu" { } ''
+      for text in '--dmenu' 'lock-session' 'hyprshutdown' "--post-cmd" 'systemctl reboot' 'systemctl poweroff'; do
+        grep -qF -- "$text" ${power} || { echo "missing in power menu: $text"; exit 1; }
+      done
+      touch $out
+    '';
+
   theme-unknown = rejects "theme-unknown" [ { chena.theme = "no-such-theme"; } ];
+
+  # Each workspace also gets a key on the number row, which has ten keys.
+  workspaces-too-many = rejects "workspaces-too-many" [
+    { chena.workspaces.keys = pkgs.lib.genList toString 11; }
+  ];
 
   ghostty-theme = checkLines "ghostty-theme" [ ] ".config/ghostty/config" [
     "background = #282a36"
@@ -178,6 +210,18 @@ in
       and .["modules-left"] == ["hyprland/workspaces"]
       and .["modules-center"] == ["clock"]
       and .["modules-right"] == ["tray", "network", "wireplumber", "battery"]
+  '';
+
+  # The workspace ids run on through the monitors, but every bar counts from 1.
+  bar-workspaces = checkJson "bar-workspaces" [ ] ".config/waybar/config" ''
+    .[0]["hyprland/workspaces"]
+    | .format == "{icon}"
+      and .["format-icons"]["1"] == "1"
+      and .["format-icons"]["9"] == "9"
+      and .["format-icons"]["10"] == "1"
+      and .["format-icons"]["36"] == "9"
+      and (.["on-scroll-up"] | contains("m+1"))
+      and (.["on-scroll-down"] | contains("m-1"))
   '';
 
   bar-style = checkContains "bar-style" [ ] ".config/waybar/style.css" [

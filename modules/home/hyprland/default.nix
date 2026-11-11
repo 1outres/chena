@@ -26,6 +26,9 @@ let
       inherit (cfg.keyboard) layout options;
     };
     inherit (cfg) monitors;
+    workspaces = {
+      inherit (cfg.workspaces) keys;
+    };
     touchpad.natural_scroll = cfg.touchpad.naturalScroll;
     style = {
       gaps_in = style.layout.gapsIn;
@@ -48,12 +51,23 @@ let
     "layouts"
     "misc"
     "input"
+    "workspaces"
     "binds"
     "rules"
     "session"
   ];
 
   extraModules = lib.attrNames cfg.extraLua;
+
+  splitWorkspaces = pkgs.callPackage ../../../packages/split-monitor-workspaces { };
+
+  splitModules = [
+    "split-monitor-workspaces"
+    "globals"
+    "helpers"
+    "monitors"
+    "dispatchers"
+  ];
 
   init = lib.concatMapStrings (name: "require(${toLua name})\n") (
     map (name: "chena.${name}") coreModules ++ map (name: "chena.extra.${name}") extraModules
@@ -110,6 +124,27 @@ in
       description = "Monitor rules, applied in order.";
     };
 
+    workspaces.keys = mkOption {
+      type = types.addCheck (types.nonEmptyListOf types.str) (keys: lib.length keys <= 10);
+      default = [
+        "Z"
+        "X"
+        "C"
+        "S"
+        "D"
+        "F"
+        "W"
+        "E"
+        "R"
+      ];
+      description = ''
+        Keys for the workspaces of the focused monitor, from the first
+        workspace to the last. The default reads like a number pad under the
+        left hand: Z X C are 1 to 3, S D F are 4 to 6, W E R are 7 to 9.
+        The number row works too, so the list can hold at most ten keys.
+      '';
+    };
+
     touchpad.naturalScroll = mkOption {
       type = types.bool;
       default = true;
@@ -147,6 +182,9 @@ in
       }
       // lib.genAttrs' coreModules (
         name: lib.nameValuePair "chena.${name}" (notAutoLoaded ./lua/${name}.lua)
+      )
+      // lib.genAttrs' splitModules (
+        name: lib.nameValuePair "chena.split.${name}" (notAutoLoaded "${splitWorkspaces}/lua/${name}.lua")
       )
       // lib.mapAttrs' (
         name: content: lib.nameValuePair "chena.extra.${name}" (notAutoLoaded content)

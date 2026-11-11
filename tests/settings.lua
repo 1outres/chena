@@ -36,7 +36,17 @@ if not settings.programs.osd:find("/bin/swayosd%-client$") then
     error("programs.osd is not swayosd-client: " .. tostring(settings.programs.osd))
 end
 
-for _, program in ipairs({ "terminal", "menu", "shutdown", "osd", "brightness", "lock", "session_start", "session_end" }) do
+expect(table.concat(settings.workspaces.keys), "ZXCSDFWER", "workspaces.keys")
+
+if not settings.programs.clipboard:find("/bin/walker %-%-provider clipboard$") then
+    error("programs.clipboard is not the walker clipboard: " .. tostring(settings.programs.clipboard))
+end
+
+if not settings.programs.screenshot:find("/bin/hyprshot %-%-freeze %-%-clipboard%-only %-%-mode$") then
+    error("programs.screenshot is not hyprshot: " .. tostring(settings.programs.screenshot))
+end
+
+for _, program in ipairs({ "terminal", "menu", "shutdown", "power", "clipboard", "screenshot", "osd", "brightness", "lock", "session_start", "session_end" }) do
     local path = settings.programs[program]
     if type(path) ~= "string" or not path:find("^/nix/store/") then
         error("programs." .. program .. " is not a store path: " .. tostring(path))

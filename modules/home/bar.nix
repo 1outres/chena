@@ -4,6 +4,19 @@ let
   inherit (config.chena) style;
   inherit (style) colors;
   inherit (import ../../lib/css.nix) px pt;
+
+  workspaceCount = lib.length config.chena.workspaces.keys;
+
+  # Workspace ids run on through the monitors: the first has 1 to 9, the next
+  # 10 to 18. Each bar should count from 1, so every range gets the same labels.
+  workspaceLabels = lib.listToAttrs (
+    lib.concatMap (
+      monitor:
+      lib.genList (
+        index: lib.nameValuePair (toString (monitor * workspaceCount + index + 1)) (toString (index + 1))
+      ) workspaceCount
+    ) (lib.range 0 3)
+  );
 in
 {
   config = lib.mkIf config.chena.enable {
@@ -28,9 +41,10 @@ in
           ];
 
           "hyprland/workspaces" = {
-            format = "{id}";
-            on-scroll-up = "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'";
-            on-scroll-down = "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'";
+            format = "{icon}";
+            format-icons = workspaceLabels;
+            on-scroll-up = "hyprctl dispatch 'hl.dsp.focus({ workspace = \"m+1\" })'";
+            on-scroll-down = "hyprctl dispatch 'hl.dsp.focus({ workspace = \"m-1\" })'";
           };
 
           clock = {

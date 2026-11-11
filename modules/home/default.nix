@@ -14,6 +14,8 @@
     ./notifications.nix
     ./osd.nix
     ./lock.nix
+    ./power.nix
+    ./screenshot.nix
     ./brightness.nix
     ./hyprland
   ];
@@ -22,7 +24,8 @@
     enable = lib.mkEnableOption "the chena desktop";
 
     programs = lib.mkOption {
-      type = lib.types.attrsOf lib.types.str;
+      # Lazy because a command here can be built from other commands here.
+      type = lib.types.lazyAttrsOf lib.types.str;
       default = { };
       internal = true;
       description = ''
