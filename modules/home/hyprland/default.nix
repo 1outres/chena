@@ -63,6 +63,7 @@ let
     "misc"
     "input"
     "workspaces"
+    "gather"
     "binds"
     "rules"
     "session"

@@ -49,14 +49,14 @@ let
       touch $out
     '';
 
-  # Runs a test of clamshell.lua against the generated file and settings.
-  checkClamshell =
-    name: modules: script:
+  # Runs a test of one generated Lua file against the generated settings.
+  checkModule =
+    name: modules: file: script: args:
     let
       hypr = "${(mkHome modules).config.home-files}/.config/hypr/chena";
     in
     pkgs.runCommand "chena-${name}" { nativeBuildInputs = [ pkgs.lua ]; } ''
-      lua ${script} ${hypr}/settings.lua ${hypr}/clamshell.lua
+      lua ${script} ${hypr}/settings.lua ${hypr}/${file} ${pkgs.lib.escapeShellArgs args}
       touch $out
     '';
 
@@ -217,9 +217,11 @@ in
 
   binds-shoji = checkBinds "binds-shoji" withShoji;
 
-  clamshell = checkClamshell "clamshell" withClamshell ./clamshell.lua;
+  clamshell = checkModule "clamshell" withClamshell "clamshell.lua" ./clamshell.lua [ ];
 
-  clamshell-off = checkClamshell "clamshell-off" [ ] ./clamshell-off.lua;
+  clamshell-off = checkModule "clamshell-off" [ ] "clamshell.lua" ./clamshell-off.lua [ ];
+
+  gather = checkModule "gather" [ ] "gather.lua" ./gather.lua [ ];
 
   home-clamshell = verifyConfig "home-clamshell" withClamshell;
 
