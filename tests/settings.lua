@@ -20,6 +20,14 @@ expect(settings.touchpad.natural_scroll, false, "touchpad.natural_scroll")
 expect(settings.cursor.name, "Adwaita", "cursor.name")
 expect(settings.cursor.size, 24, "cursor.size")
 
+expect(settings.style.gaps_in, 2, "style.gaps_in")
+expect(settings.style.gaps_out, 4, "style.gaps_out")
+expect(settings.style.border_size, 2, "style.border_size")
+expect(settings.style.rounding, 0, "style.rounding")
+expect(settings.style.colors.active_border, "rgb(bd93f9)", "style.colors.active_border")
+expect(settings.style.colors.inactive_border, "rgb(44475a)", "style.colors.inactive_border")
+expect(settings.style.colors.desktop, "rgb(191a21)", "style.colors.desktop")
+
 for _, program in ipairs({ "terminal", "menu", "shutdown", "wpctl", "brightnessctl", "playerctl" }) do
     local path = settings.programs[program]
     if type(path) ~= "string" or not path:find("^/nix/store/") then

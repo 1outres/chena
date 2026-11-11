@@ -37,13 +37,16 @@ chena = {
 };
 ```
 
-See `modules/home/default.nix` for every option.
+Each file in `modules/home` defines the options for its part.
 
 ## Layout
 
+- `themes`: one file per color theme. Components use the color roles, never
+  the theme's own color names.
 - `modules/nixos`: system side (Hyprland, greetd).
-- `modules/home`: user side. `default.nix` defines the options and
-  `lua/` holds the Hyprland config.
+- `modules/home`: user side, one file per component. `style.nix` builds the
+  design tokens (colors, fonts, shapes) that every component reads.
+  `hyprland/lua` holds the Hyprland config.
 - `tests`: checks run by `nix flake check`.
 
 Nix writes every value it decides into `~/.config/hypr/chena/settings.lua`.
