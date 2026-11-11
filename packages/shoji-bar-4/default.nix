@@ -48,6 +48,8 @@ rustPlatform.buildRustPackage {
     hash = "sha256-2sfcxlhNtG/Ov78Ro4GgOJ8PjLzu30hXySg176hhrhs=";
   };
 
+  patches = [ ./number-workspaces-per-output.patch ];
+
   cargoLock = {
     lockFile = ./Cargo.lock;
     outputHashes."anti-webui-0.1.0" = "sha256-bSkXbDV3xgxqEyjRQe5fva94xDijsLdZ0scx/o3ites=";
