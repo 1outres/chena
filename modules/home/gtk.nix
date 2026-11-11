@@ -8,6 +8,7 @@ in
     gtk = {
       enable = true;
       theme = style.gtk;
+      iconTheme = style.icons;
       font = {
         name = style.font.mono;
         size = style.fontSize.small;

@@ -241,8 +241,35 @@ in
 
   gtk-theme = checkLines "gtk-theme" [ ] ".config/gtk-3.0/settings.ini" [
     "gtk-theme-name=Dracula"
+    "gtk-icon-theme-name=Papirus-Dark"
     "gtk-application-prefer-dark-theme=1"
   ];
+
+  qt-kvantum = checkLines "qt-kvantum" [ ] ".config/Kvantum/kvantum.kvconfig" [
+    "theme=Dracula-Solid"
+  ];
+
+  qt-kvantum-theme = checkContains "qt-kvantum-theme" [ ]
+    ".config/Kvantum/Dracula-Solid/Dracula-Solid.kvconfig"
+    [ "[%General]" ];
+
+  qt-ct = checkLines "qt-ct" [ ] ".config/qt6ct/qt6ct.conf" [
+    "style=kvantum"
+    "icon_theme=Papirus-Dark"
+  ];
+
+  # The folder color comes from the theme, so folders match the accent.
+  icon-folders =
+    let
+      icons = (mkHome [ ]).config.gtk.iconTheme.package;
+    in
+    pkgs.runCommand "chena-icon-folders" { } ''
+      target=$(readlink ${icons}/share/icons/Papirus-Dark/48x48/places/folder.svg)
+      case "$target" in
+        *violet*) touch $out ;;
+        *) echo "folder icon is not violet: $target"; exit 1 ;;
+      esac
+    '';
 
   nixos-eval = pkgs.writeText "chena-nixos-eval" nixos.config.system.build.toplevel.drvPath;
 

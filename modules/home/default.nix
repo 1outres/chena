@@ -6,6 +6,7 @@
     ./fonts.nix
     ./cursor.nix
     ./gtk.nix
+    ./qt.nix
     ./terminal.nix
     ./bar.nix
     ./launcher.nix

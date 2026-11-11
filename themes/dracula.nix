@@ -43,4 +43,14 @@
     name = "Dracula";
     package = pkgs.dracula-theme;
   };
+
+  icons = {
+    name = "Papirus-Dark";
+    package = pkgs.papirus-icon-theme.override { color = "violet"; };
+  };
+
+  kvantum = {
+    name = "Dracula-Solid";
+    package = pkgs.dracula-theme;
+  };
 }
