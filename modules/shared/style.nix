@@ -43,6 +43,7 @@ in
       gtk
       icons
       kvantum
+      syntax
       ;
 
     # The same colors as rgb(RRGGBB), the form that Hyprland and its tools read.

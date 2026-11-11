@@ -97,6 +97,22 @@ let
     assert !result.success;
     pkgs.writeText "chena-${name}" "rejected";
 
+  # chena only colors these tools. Turning them on stays the user's choice.
+  withCli = [
+    {
+      programs = {
+        bat.enable = true;
+        git.enable = true;
+        delta = {
+          enable = true;
+          enableGitIntegration = true;
+        };
+        fzf.enable = true;
+        lazygit.enable = true;
+      };
+    }
+  ];
+
   customized = [
     {
       chena = {
@@ -270,6 +286,34 @@ in
         *) echo "folder icon is not violet: $target"; exit 1 ;;
       esac
     '';
+
+  cli-bat = checkContains "cli-bat" withCli ".config/bat/config" [ "--theme=Dracula" ];
+
+  cli-delta = checkContains "cli-delta" withCli ".config/git/config" [ "syntax-theme = \"Dracula\"" ];
+
+  cli-fzf =
+    let
+      options = (mkHome withCli).config.home.sessionVariables.FZF_DEFAULT_OPTS;
+    in
+    assert pkgs.lib.hasInfix "bg+:#44475a" options;
+    assert pkgs.lib.hasInfix "pointer:#bd93f9" options;
+    pkgs.writeText "chena-cli-fzf" "ok";
+
+  cli-lazygit = checkContains "cli-lazygit" withCli ".config/lazygit/config.yml" [
+    "activeBorderColor:"
+    "'#bd93f9'"
+    "selectedLineBgColor:"
+    "'#44475a'"
+  ];
+
+  cli-btop = checkContains "cli-btop" [ ] ".config/btop/btop.conf" [ "color_theme = \"chena\"" ];
+
+  cli-btop-theme = checkLines "cli-btop-theme" [ ] ".config/btop/themes/chena.theme" [
+    "theme[main_bg]=\"#282a36\""
+    "theme[main_fg]=\"#f8f8f2\""
+    "theme[hi_fg]=\"#bd93f9\""
+    "theme[cpu_end]=\"#ff5555\""
+  ];
 
   nixos-eval = pkgs.writeText "chena-nixos-eval" nixos.config.system.build.toplevel.drvPath;
 

@@ -8,6 +8,7 @@
     ./gtk.nix
     ./qt.nix
     ./terminal.nix
+    ./cli.nix
     ./bar.nix
     ./launcher.nix
     ./notifications.nix

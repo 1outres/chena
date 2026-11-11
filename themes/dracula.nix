@@ -53,4 +53,8 @@
     name = "Dracula-Solid";
     package = pkgs.dracula-theme;
   };
+
+  # Syntax highlighting needs a full TextMate theme, so bat and delta use the
+  # one that bat ships instead of one built from the colors above.
+  syntax = "Dracula";
 }
