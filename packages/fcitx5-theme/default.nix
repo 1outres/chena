@@ -19,7 +19,7 @@ let
   };
 
   background = {
-    Color = colors.surface;
+    Color = style.panel.hex;
     BorderColor = colors.border;
     BorderWidth = layout.border;
   };

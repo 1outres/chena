@@ -29,8 +29,14 @@ hl.config({
             enabled = false,
         },
 
+        -- Only what is not fully opaque gets blurred, so solid apps such as
+        -- the browser look the same as with blur off.
         blur = {
-            enabled = false,
+            enabled           = true,
+            size              = style.blur.size,
+            passes            = style.blur.passes,
+            new_optimizations = true,
+            input_methods     = true,
         },
     },
 

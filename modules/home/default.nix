@@ -39,5 +39,15 @@
         fills a role.
       '';
     };
+
+    blurredLayers = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      internal = true;
+      description = ''
+        Layer namespaces that the compositor blurs behind. Each translucent
+        panel adds its own.
+      '';
+    };
   };
 }

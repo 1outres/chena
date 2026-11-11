@@ -38,6 +38,8 @@ let
       gaps_out = style.layout.gapsOut;
       border_size = style.layout.border;
       rounding = style.layout.radius;
+      inherit (style.translucency) blur;
+      blurred_layers = cfg.blurredLayers;
       colors = {
         active_border = style.hyprColors.accent;
         inactive_border = style.hyprColors.border;

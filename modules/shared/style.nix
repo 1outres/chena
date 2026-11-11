@@ -12,6 +12,13 @@ let
   ) (builtins.readDir ../../themes);
 
   theme = themes.${config.chena.theme};
+
+  color = import ../../lib/color.nix { inherit lib; };
+
+  translucency = {
+    panel = 50;
+    window = 80;
+  };
 in
 {
   options.chena = {
@@ -85,6 +92,30 @@ in
       hairline = 1;
       radius = 0;
       progress = 6;
+    };
+
+    # How much of each kind of surface is opaque, in percent. The wallpaper
+    # shows through the rest, and the compositor blurs what is behind it.
+    # Panels float over the desktop for a moment, such as the bar and the
+    # launcher. Windows are read for a long time, such as the terminal, so
+    # they stay darker. Apps such as the browser stay solid.
+    translucency =
+      lib.mapAttrs (_: percent: {
+        inherit percent;
+        opacity = color.fraction percent;
+      }) translucency
+      // {
+        blur = {
+          size = 6;
+          passes = 2;
+        };
+      };
+
+    # The panel color at the panel opacity, in each form the components read.
+    panel = {
+      css = color.css theme.colors.surface translucency.panel;
+      hex = color.hex theme.colors.surface translucency.panel;
+      hypr = color.hypr theme.colors.surface translucency.panel;
     };
   };
 }

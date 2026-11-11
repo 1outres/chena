@@ -57,3 +57,16 @@ for _, program in ipairs({ "terminal", "menu", "shutdown", "power", "clipboard",
         error("programs." .. program .. " is not a store path: " .. tostring(path))
     end
 end
+
+expect(settings.style.blur.size, 6, "style.blur.size")
+expect(settings.style.blur.passes, 2, "style.blur.passes")
+
+local blurred = {}
+for _, namespace in ipairs(settings.style.blurred_layers) do
+    blurred[namespace] = true
+end
+for _, namespace in ipairs({ "waybar", "walker", "notifications", "swayosd" }) do
+    if not blurred[namespace] then
+        error("layer is not blurred: " .. namespace)
+    end
+end

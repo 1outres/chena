@@ -35,6 +35,8 @@ let
 in
 {
   config = lib.mkIf config.chena.enable {
+    chena.blurredLayers = [ "swayosd" ];
+
     chena.programs = {
       inherit osd;
       brightness = lib.getExe brightness;
@@ -47,7 +49,7 @@ in
 
     xdg.configFile."swayosd/style.css".text = ''
       window#osd {
-        background: ${colors.surface};
+        background: ${style.panel.css};
         border: ${border} ${colors.border};
         border-radius: ${radius};
       }

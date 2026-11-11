@@ -6,11 +6,13 @@ let
 in
 {
   config = lib.mkIf config.chena.enable {
+    chena.blurredLayers = [ "notifications" ];
+
     services.mako = {
       enable = true;
       settings = {
         font = "${style.font.mono}, ${style.font.cjk} ${toString style.fontSize.small}";
-        background-color = colors.surface;
+        background-color = style.panel.hex;
         text-color = colors.text;
         border-color = colors.border;
         progress-color = "over ${colors.selection}";

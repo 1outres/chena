@@ -20,6 +20,8 @@ let
 in
 {
   config = lib.mkIf config.chena.enable {
+    chena.blurredLayers = [ "waybar" ];
+
     programs.waybar = {
       enable = true;
       systemd.enable = true;
@@ -115,7 +117,7 @@ in
         }
 
         window#waybar {
-          background-color: ${colors.surface};
+          background-color: ${style.panel.css};
           color: ${colors.text};
           border-bottom: ${px style.layout.border} solid ${colors.border};
         }

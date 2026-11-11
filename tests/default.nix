@@ -208,7 +208,7 @@ in
     "palette = 5=#ff79c6"
     "font-family = JetBrainsMono Nerd Font"
     "font-family = Noto Sans CJK JP"
-    "background-opacity = 1"
+    "background-opacity = 0.8"
   ];
 
   bar-config = checkJson "bar-config" [ ] ".config/waybar/config" ''
@@ -261,7 +261,7 @@ in
     checkLines "input-method-theme" [ ] ".local/share/fcitx5/themes/chena/theme.conf"
       [
         "[InputPanel/Background]"
-        "Color=#21222c"
+        "Color=#21222c80"
         "BorderColor=#44475a"
         "BorderWidth=2"
         "[InputPanel/Highlight]"
@@ -325,7 +325,7 @@ in
 
   bar-style = checkContains "bar-style" [ ] ".config/waybar/style.css" [
     "font-family: \"JetBrainsMono Nerd Font\", \"Noto Sans CJK JP\";"
-    "background-color: #21222c;"
+    "background-color: rgba(33, 34, 44, 0.5);"
     "border-bottom: 2px solid #44475a;"
     "border-bottom-color: #bd93f9;"
     "color: #ff5555;"
@@ -343,7 +343,7 @@ in
 
   launcher-style = checkContains "launcher-style" [ ] ".config/walker/themes/chena/style.css" [
     "font-family: \"JetBrainsMono Nerd Font\", \"Noto Sans CJK JP\";"
-    "background: #21222c;"
+    "background: rgba(33, 34, 44, 0.5);"
     "border: 2px solid #44475a;"
     "border-left: 2px solid #bd93f9;"
     "border-radius: 0px;"
@@ -356,7 +356,7 @@ in
 
   notification-config = checkLines "notification-config" [ ] ".config/mako/config" [
     "font=JetBrainsMono Nerd Font, Noto Sans CJK JP 10"
-    "background-color=#21222c"
+    "background-color=#21222c80"
     "text-color=#f8f8f2"
     "border-color=#44475a"
     "border-size=2"
@@ -367,7 +367,7 @@ in
   ];
 
   osd-style = checkContains "osd-style" [ ] ".config/swayosd/style.css" [
-    "background: #21222c;"
+    "background: rgba(33, 34, 44, 0.5);"
     "border: 2px solid #44475a;"
     "background: #bd93f9;"
     "border-radius: 0px;"
@@ -382,7 +382,7 @@ in
     "color=rgb(191a21)"
     "font_family=JetBrainsMono Nerd Font"
     "outer_color=rgb(44475a)"
-    "inner_color=rgb(21222c)"
+    "inner_color=rgba(21222c80)"
     "check_color=rgb(bd93f9)"
     "fail_color=rgb(ff5555)"
     "capslock_color=rgb(ffb86c)"
@@ -533,6 +533,8 @@ in
     assert regreet.settings.GTK.theme_name == "Dracula";
     assert regreet.settings.GTK.icon_theme_name == "Papirus-Dark";
     assert pkgs.lib.hasInfix "#191a21" nixos.config.environment.etc."greetd/regreet.css".text;
+    assert pkgs.lib.hasInfix "rgba(33, 34, 44, 0.5)"
+      nixos.config.environment.etc."greetd/regreet.css".text;
     assert pkgs.lib.any (pkgs.lib.hasInfix "chena-fixed-brightness") (
       pkgs.lib.toList nixos.config.systemd.services.greetd.serviceConfig.ExecStartPre
     );

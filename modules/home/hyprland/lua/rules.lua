@@ -1,3 +1,15 @@
+local style = require("chena.settings").style
+
+for _, namespace in ipairs(style.blurred_layers) do
+    hl.layer_rule({
+        name  = "blur-" .. namespace,
+        match = { namespace = "^" .. namespace .. "$" },
+
+        blur         = true,
+        ignore_alpha = 0,
+    })
+end
+
 hl.window_rule({
     name  = "suppress-maximize-events",
     match = { class = ".*" },

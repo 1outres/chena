@@ -49,7 +49,7 @@ in
 
         frame,
         .background {
-          background-color: ${colors.surface};
+          background-color: ${style.panel.css};
           border: ${border} ${colors.border};
           border-radius: ${radius};
         }

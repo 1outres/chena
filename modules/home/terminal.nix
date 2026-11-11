@@ -29,7 +29,8 @@ in
         selection-foreground = style.colors.text;
         palette = lib.imap0 (index: color: "${toString index}=${color}") style.terminal;
 
-        background-opacity = 1;
+        # Hyprland draws the blur, so Ghostty does not ask for its own.
+        background-opacity = style.translucency.window.opacity;
         background-blur = false;
         window-padding-x = style.spacing.md;
         window-padding-y = style.spacing.md;

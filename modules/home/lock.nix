@@ -92,7 +92,7 @@ in
             outline_thickness = style.layout.border;
             rounding = style.layout.radius;
             outer_color = colors.border;
-            inner_color = colors.surface;
+            inner_color = style.panel.hypr;
             font_color = colors.text;
             font_family = style.font.mono;
             check_color = colors.accent;

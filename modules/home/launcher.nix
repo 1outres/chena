@@ -13,6 +13,8 @@ in
     # results, and both stay running so the launcher opens at once.
     services.elephant.enable = true;
 
+    chena.blurredLayers = [ "walker" ];
+
     chena.programs = {
       menu = lib.getExe config.services.walker.package;
       clipboard = "${lib.getExe config.services.walker.package} --provider clipboard";
@@ -59,7 +61,7 @@ in
           }
 
           .box-wrapper {
-            background: ${colors.surface};
+            background: ${style.panel.css};
             border: ${border} ${colors.border};
             border-radius: ${radius};
             padding: ${px spacing.lg};
