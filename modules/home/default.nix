@@ -21,6 +21,7 @@
     ./input-method.nix
     ./wallpaper.nix
     ./screenshot.nix
+    ./airpods.nix
     ./brightness.nix
     ./shoji.nix
     ./hyprland

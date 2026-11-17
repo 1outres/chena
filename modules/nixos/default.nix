@@ -8,6 +8,7 @@
     ./boot.nix
     ./greeter.nix
     ./bluetooth.nix
+    ./airpods.nix
   ];
 
   options.chena.enable = lib.mkEnableOption "the chena desktop";

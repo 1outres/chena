@@ -190,21 +190,28 @@ let
     }
   ];
 
-  nixos = nixpkgs.lib.nixosSystem {
-    inherit (pkgs.stdenv.hostPlatform) system;
-    modules = [
-      self.nixosModules.default
-      {
-        chena.enable = true;
-        boot.loader.grub.enable = false;
-        fileSystems."/" = {
-          device = "none";
-          fsType = "tmpfs";
-        };
-        system.stateVersion = "26.05";
-      }
-    ];
-  };
+  mkNixos =
+    modules:
+    nixpkgs.lib.nixosSystem {
+      inherit (pkgs.stdenv.hostPlatform) system;
+      modules = [
+        self.nixosModules.default
+        {
+          chena.enable = true;
+          boot.loader.grub.enable = false;
+          fileSystems."/" = {
+            device = "none";
+            fsType = "tmpfs";
+          };
+          system.stateVersion = "26.05";
+        }
+      ]
+      ++ modules;
+    };
+
+  nixos = mkNixos [ ];
+
+  withAirpods = [ { chena.airpods.enable = true; } ];
 in
 {
   home-default = verifyConfig "home-default" [ ];
@@ -510,11 +517,48 @@ in
     "icon_theme=Papirus-Dark"
   ];
 
+  airpods-off =
+    let
+      inherit (mkHome [ ]) config;
+    in
+    assert !(config.systemd.user.services ? librepods);
+    assert !(config.xdg.configFile ? "wireplumber/wireplumber.conf.d/51-chena-airpods.conf");
+    pkgs.writeText "chena-airpods-off" "ok";
+
+  airpods-service =
+    checkContains "airpods-service" withAirpods ".config/systemd/user/librepods.service"
+      [
+        "/bin/librepods --hide"
+        "WantedBy=graphical-session.target"
+      ];
+
+  airpods-buttons =
+    checkContains "airpods-buttons" withAirpods
+      ".config/wireplumber/wireplumber.conf.d/51-chena-airpods.conf"
+      [ "bluez5.dummy-avrcp-player = true" ];
+
+  airpods-apple-device-id =
+    let
+      settings = (mkNixos [ { chena.airpods.appleDeviceId = true; } ]).config.hardware.bluetooth.settings;
+    in
+    assert settings.General.DeviceID == "bluetooth:004C:0000:0000";
+    assert !(nixos.config.hardware.bluetooth.settings.General ? DeviceID);
+    pkgs.writeText "chena-airpods-apple-device-id" "ok";
+
   # The pair button in the shell only asks BlueZ to pair, so without this
   # the pairing is not kept and the device has to pair again next time.
   bluetooth-bonds =
     assert nixos.config.hardware.bluetooth.settings.General.AlwaysPairable;
     pkgs.writeText "chena-bluetooth-bonds" "ok";
+
+  airpods-codec =
+    let
+      source = pkgs.srcOnly (pkgs.callPackage ../packages/librepods { });
+    in
+    pkgs.runCommand "chena-airpods-codec" { } ''
+      grep -qF 'QStringList profiles = {"a2dp-sink", ' ${source}/media/mediacontroller.cpp
+      touch $out
+    '';
 
   qt-quick =
     let
