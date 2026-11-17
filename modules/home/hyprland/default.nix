@@ -36,6 +36,7 @@ let
     touchpad = {
       natural_scroll = cfg.touchpad.naturalScroll;
       scroll_factor = cfg.touchpad.scrollFactor;
+      clickfinger = cfg.touchpad.clickFinger;
     };
     devices = lib.mapAttrs (_: device: { natural_scroll = device.naturalScroll; }) cfg.devices;
     style = {
@@ -193,6 +194,16 @@ in
         default = 1;
         example = 0.5;
         description = "Multiplier for the scroll speed. Smaller is slower.";
+      };
+      clickFinger = mkOption {
+        type = types.bool;
+        default = true;
+        description = ''
+          Whether a click is decided by the number of fingers on the touchpad:
+          one finger is a left click, two is a right click and three is a
+          middle click. When off, the click is decided by where it lands, so
+          a right click needs the bottom right corner.
+        '';
       };
     };
 

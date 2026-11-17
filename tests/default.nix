@@ -179,6 +179,7 @@ let
         touchpad = {
           naturalScroll = false;
           scrollFactor = 0.5;
+          clickFinger = false;
         };
         devices."zmk-project-roba-mouse" = {
           naturalScroll = true;

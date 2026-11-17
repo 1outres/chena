@@ -10,8 +10,9 @@ hl.config({
         sensitivity = 0,
 
         touchpad = {
-            natural_scroll = settings.touchpad.natural_scroll,
-            scroll_factor  = settings.touchpad.scroll_factor,
+            natural_scroll       = settings.touchpad.natural_scroll,
+            scroll_factor        = settings.touchpad.scroll_factor,
+            clickfinger_behavior = settings.touchpad.clickfinger,
         },
     },
 })
