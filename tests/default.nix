@@ -510,6 +510,12 @@ in
     "icon_theme=Papirus-Dark"
   ];
 
+  # The pair button in the shell only asks BlueZ to pair, so without this
+  # the pairing is not kept and the device has to pair again next time.
+  bluetooth-bonds =
+    assert nixos.config.hardware.bluetooth.settings.General.AlwaysPairable;
+    pkgs.writeText "chena-bluetooth-bonds" "ok";
+
   qt-quick =
     let
       inherit (mkHome [ ]) config;

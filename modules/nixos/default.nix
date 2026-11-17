@@ -7,6 +7,7 @@
     ../shared/wallpaper.nix
     ./boot.nix
     ./greeter.nix
+    ./bluetooth.nix
   ];
 
   options.chena.enable = lib.mkEnableOption "the chena desktop";
