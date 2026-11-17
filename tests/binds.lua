@@ -73,13 +73,12 @@ local function expectUnbound(keys)
     end
 end
 
-expectAction("SUPER + Q", "exec_cmd", programs.terminal)
+expectAction("SUPER + Q", "window.close")
 expectAction("SUPER + Space", "exec_cmd", programs.menu)
 expectAction("SUPER + L", "exec_cmd", programs.lock)
 expectAction("SUPER + Escape", "exec_cmd", programs.power)
 expectAction("SUPER + SHIFT + M", "exec_cmd", programs.shutdown)
 expectAction("ALT + Space", "exec_cmd", programs.clipboard)
-expectAction("SUPER + W", "window.close")
 expectField("SUPER + F", "window.fullscreen", "mode", "fullscreen")
 
 expectAction("SUPER + SHIFT + S", "exec_cmd", programs.screenshot .. " region")
@@ -87,7 +86,7 @@ expectAction("SUPER + SHIFT + 4", "exec_cmd", programs.screenshot .. " region")
 expectAction("SUPER + SHIFT + A", "exec_cmd", programs.screenshot_edit)
 expectAction("SUPER + period", "exec_cmd", programs.emoji)
 
-for _, keys in ipairs({ "Print", "SHIFT + Print", "SUPER + Print", "SUPER + R", "SUPER + C", "SUPER + M", "SUPER + V", "SUPER + P", "SUPER + J", "SUPER + S" }) do
+for _, keys in ipairs({ "Print", "SHIFT + Print", "SUPER + Print", "SUPER + R", "SUPER + C", "SUPER + M", "SUPER + V", "SUPER + P", "SUPER + J", "SUPER + S", "SUPER + W" }) do
     expectUnbound(keys)
 end
 

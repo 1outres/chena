@@ -11,12 +11,11 @@ local function exec(...)
     return hl.dsp.exec_cmd(table.concat({ ... }, " "))
 end
 
-hl.bind(app .. " + Q",         exec(programs.terminal))
 hl.bind(app .. " + Space",     exec(programs.menu))
 hl.bind(app .. " + L",         exec(programs.lock))
 hl.bind(app .. " + Escape",    exec(programs.power))
 hl.bind(app .. " + SHIFT + M", exec(programs.shutdown))
-hl.bind(app .. " + W",         hl.dsp.window.close())
+hl.bind(app .. " + Q",         hl.dsp.window.close())
 hl.bind(app .. " + F",         hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 hl.bind(wm  .. " + Space",     exec(programs.clipboard))
 hl.bind(app .. " + period",    exec(programs.emoji))
