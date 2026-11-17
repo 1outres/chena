@@ -596,6 +596,17 @@ in
     assert nixos.config.security.pam.services ? hyprlock;
     pkgs.writeText "chena-nixos-lock-pam" "ok";
 
+  # Apps such as 1Password keep their secrets through the Secret Service. The
+  # greetd login goes through the login PAM stack, which unlocks the keyring.
+  nixos-keyring =
+    let
+      inherit (nixos.config) services security;
+    in
+    assert services.gnome.gnome-keyring.enable;
+    assert pkgs.lib.hasInfix "pam_gnome_keyring.so" security.pam.services.login.text;
+    assert !services.gnome.gcr-ssh-agent.enable;
+    pkgs.writeText "chena-nixos-keyring" "ok";
+
   boot-splash =
     let
       plymouth = nixos.config.boot.plymouth;

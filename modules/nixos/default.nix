@@ -19,5 +19,11 @@
 
     # Nautilus needs this for the trash and for removable disks.
     services.gvfs.enable = true;
+
+    # The Secret Service. Without it, 1Password forgets the 2FA of the device
+    # and asks for it again on every new session.
+    services.gnome.gnome-keyring.enable = true;
+    # gnome-keyring turns this on, but chena does not pick the SSH agent.
+    services.gnome.gcr-ssh-agent.enable = lib.mkDefault false;
   };
 }
