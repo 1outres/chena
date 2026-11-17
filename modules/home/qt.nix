@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   inherit (config.chena) style;
@@ -23,7 +28,14 @@ in
     qt = {
       enable = true;
       platformTheme.name = "qtct";
-      style.name = "kvantum";
+
+      # Only the plugin, since a style name sets QT_STYLE_OVERRIDE. Qt 6 also
+      # takes that as the Qt Quick style, and Kvantum has none, so QML apps
+      # fail to load. qt5ct and qt6ct pick Kvantum for widgets instead.
+      style.package = [
+        pkgs.libsForQt5.qtstyleplugin-kvantum
+        pkgs.qt6Packages.qtstyleplugin-kvantum
+      ];
       qt5ctSettings = ctSettings;
       qt6ctSettings = ctSettings;
 

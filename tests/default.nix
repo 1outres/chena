@@ -510,6 +510,16 @@ in
     "icon_theme=Papirus-Dark"
   ];
 
+  qt-quick =
+    let
+      inherit (mkHome [ ]) config;
+      names = map (package: package.pname or "") config.home.packages;
+    in
+    assert !(config.home.sessionVariables ? QT_STYLE_OVERRIDE);
+    assert builtins.elem "qtstyleplugin-kvantum5" names;
+    assert builtins.elem "qtstyleplugin-kvantum" names;
+    pkgs.writeText "chena-qt-quick" "ok";
+
   # The folder color comes from the theme, so folders match the accent.
   icon-folders =
     let
