@@ -26,6 +26,7 @@ let
       inherit (cfg.keyboard) layout options;
     };
     inherit (cfg) monitors;
+    displays = if cfg.displays.enable then { inherit (cfg.displays) state; } else null;
     clamshell = lib.mapNullable (clamshell: {
       inherit (clamshell) switch output;
       lid_state = "${lib.getExe' pkgs.systemd "busctl"} get-property org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager LidClosed";
@@ -57,6 +58,7 @@ let
   # Load order of the core files. Later files can override earlier ones.
   coreModules = [
     "monitors"
+    "displays"
     "clamshell"
     "environment"
     "appearance"

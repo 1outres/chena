@@ -23,6 +23,7 @@
     ./screenshot.nix
     ./airpods.nix
     ./brightness.nix
+    ./displays.nix
     ./shoji.nix
     ./hyprland
   ];

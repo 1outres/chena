@@ -9,8 +9,8 @@ end
 
 -- Loads clamshell.lua against a fake compositor with the given monitors and
 -- lid state, and returns what it bound, what it listens to and the monitor
--- rules it applied.
-local function load(monitors, lidClosed)
+-- rules it applied. savedRules are the panel rules that displays.lua keeps.
+local function load(monitors, lidClosed, savedRules)
     local world = { binds = {}, handlers = {}, rules = {}, monitors = monitors }
 
     hl = {
@@ -53,6 +53,15 @@ local function load(monitors, lidClosed)
         return settings
     end
     package.loaded["chena.settings"] = nil
+
+    package.preload["chena.displays"] = function()
+        return {
+            rule_for = function(output)
+                return (savedRules or {})[output]
+            end,
+        }
+    end
+    package.loaded["chena.displays"] = nil
 
     dofile(script)
     return world
@@ -110,6 +119,28 @@ do
     expect(rule.disabled, false, "open: disabled")
     expect(rule.scale, 2, "open: scale")
     expect(rule.mode, "preferred", "open: mode")
+end
+
+-- With a saved layout, opening the lid brings the panel back as it was saved.
+do
+    local saved = {
+        ["eDP-1"] = {
+            output = "eDP-1",
+            mode = "3024x1890@120.000",
+            position = "3072x0",
+            scale = 1.75,
+            transform = 0,
+            disabled = false,
+        },
+    }
+    local world = load(docked(), false, saved)
+    world.binds[closeKeys].action()
+    world.binds[openKeys].action()
+    local rule = lastRule(world)
+    expect(rule.output, "eDP-1", "open saved: output")
+    expect(rule.disabled, false, "open saved: disabled")
+    expect(rule.scale, 1.75, "open saved: scale")
+    expect(rule.position, "3072x0", "open saved: position")
 end
 
 -- A reload with the lid closed keeps the panel off.

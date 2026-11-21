@@ -161,6 +161,8 @@ let
     }
   ];
 
+  withDisplays = [ { chena.displays.enable = true; } ];
+
   customized = [
     {
       chena = {
@@ -238,6 +240,29 @@ in
   ];
 
   home-clamshell = verifyConfig "home-clamshell" withClamshell;
+
+  displays = checkModule "displays" withDisplays "displays.lua" ./displays.lua [ ];
+
+  # The built-in screen stays the lid's to turn on and off.
+  displays-clamshell = checkModule "displays-clamshell" (
+    withDisplays ++ withClamshell
+  ) "displays.lua" ./displays.lua [ ];
+
+  displays-off = checkModule "displays-off" [ ] "displays.lua" ./displays-off.lua [ ];
+
+  home-displays = verifyConfig "home-displays" (withDisplays ++ withClamshell);
+
+  # The layouts change while the desktop runs, so they live in the state
+  # folder and not in the Nix store.
+  displays-state =
+    let
+      inherit (mkHome withDisplays) config;
+      packageNames = modules: map (package: package.pname or "") (mkHome modules).config.home.packages;
+    in
+    assert builtins.elem "wdisplays" (packageNames withDisplays);
+    assert !(builtins.elem "wdisplays" (packageNames [ ]));
+    assert pkgs.lib.hasInfix "/home/test/.local/state/chena" config.home.activation.chenaDisplays.data;
+    pkgs.writeText "chena-displays-state" "ok";
 
   shell-unknown = rejects "shell-unknown" [ { chena.shell = "no-such-shell"; } ];
 

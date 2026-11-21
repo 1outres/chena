@@ -5,11 +5,19 @@ if not clamshell then
     return
 end
 
+local displays = require("chena.displays")
+
 local panel = clamshell.output
 
--- A rule that names the output wins over one for every output, the same way
--- Hyprland picks between them.
+-- A saved layout wins over the Nix rules. Among those, a rule that names the
+-- output wins over one for every output, the same way Hyprland picks between
+-- them.
 local function configuredRule()
+    local saved = displays.rule_for(panel)
+    if saved then
+        return saved
+    end
+
     local named, any
     for _, monitor in ipairs(settings.monitors) do
         if monitor.output == panel then
