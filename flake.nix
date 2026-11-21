@@ -29,6 +29,10 @@
 
       homeModules.default = ./modules/home;
 
+      packages = forAllSystems (pkgs: {
+        preview = import ./preview { inherit pkgs home-manager self; };
+      });
+
       checks = forAllSystems (
         pkgs:
         import ./tests {
@@ -38,6 +42,10 @@
             home-manager
             self
             ;
+        }
+        // {
+          # Building it runs shellcheck over the script.
+          inherit (self.packages.${pkgs.stdenv.hostPlatform.system}) preview;
         }
       );
 

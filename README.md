@@ -48,6 +48,7 @@ Each file in `modules/home` defines the options for its part.
   design tokens (colors, fonts, shapes) that every component reads.
   `hyprland/lua` holds the Hyprland config.
 - `tests`: checks run by `nix flake check`.
+- `preview`: runs the chena shell in a hidden nested Hyprland for development.
 
 Nix writes every value it decides into `~/.config/hypr/chena/settings.lua`.
 The Lua files read it with `require("chena.settings")`.
@@ -63,3 +64,17 @@ To try a local copy from a consumer flake:
 ```sh
 nixos-rebuild switch --flake . --override-input chena path:/path/to/chena
 ```
+
+To see the chena shell without logging in to it, run it in a hidden nested
+Hyprland and look at it with screenshots:
+
+```sh
+nix run .#preview -- start
+nix run .#preview -- key SUPER+space
+nix run .#preview -- shot
+nix run .#preview -- stop
+```
+
+`nix run .#preview -- help` lists every command. Nothing shows on the real
+screens, and the preview has its own HOME, D-Bus buses and mock system
+services, so the running desktop is not touched.
