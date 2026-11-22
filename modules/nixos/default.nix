@@ -16,8 +16,10 @@
   config = lib.mkIf config.chena.enable {
     programs.hyprland.enable = true;
 
-    # Adds the PAM service that hyprlock checks the password with.
-    programs.hyprlock.enable = true;
+    # The PAM service that hyprlock checks the password with. This is not
+    # programs.hyprlock, because that also starts hypridle, and Home Manager
+    # already starts it in the session.
+    security.pam.services.hyprlock = { };
 
     # Nautilus needs this for the trash and for removable disks.
     services.gvfs.enable = true;

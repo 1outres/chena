@@ -672,6 +672,13 @@ in
     assert nixos.config.security.pam.services ? hyprlock;
     pkgs.writeText "chena-nixos-lock-pam" "ok";
 
+  # Home Manager starts hypridle on wayland.systemd.target. A second start
+  # from graphical-session.target makes an ordering cycle when that target
+  # is not graphical-session.target, and systemd then cannot stop the session.
+  nixos-idle-home-only =
+    assert !nixos.config.services.hypridle.enable;
+    pkgs.writeText "chena-nixos-idle-home-only" "ok";
+
   # Apps such as 1Password keep their secrets through the Secret Service. The
   # greetd login goes through the login PAM stack, which unlocks the keyring.
   nixos-keyring =
