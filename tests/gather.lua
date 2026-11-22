@@ -160,6 +160,44 @@ do
     expect(world.rules["special:scratch"], nil, "rule for a special workspace")
 end
 
+-- A reload while the lid is shut gives DP-1 the run 1 to 9, which the panel
+-- held before, and DP-1 shows 1. The windows left on 10 to 12 come to 1 so
+-- the keys reach them again.
+do
+    local world = load(
+        { { name = "DP-1", active = 1 } },
+        concat(range(1, 9, "DP-1"), range(10, 12, "DP-1")),
+        { [1] = 1, [10] = 1, [11] = 1, [12] = 1 }
+    )
+    world.handlers["config.reloaded"]()
+
+    expect(#world.moves, 3, "windows moved after a reload")
+    for _, move in ipairs(world.moves) do
+        expect(move.argument.workspace, "1", "move target after a reload")
+        expect(move.argument.follow, false, "move follows after a reload")
+        local from = move.argument.window.workspace.id
+        if from < 10 or from > 12 then
+            error("moved a window from workspace " .. from .. " after a reload")
+        end
+    end
+    for id = 10, 12 do
+        expect(world.rules[tostring(id)].persistent, false, "workspace " .. id .. " kept after a reload")
+    end
+end
+
+-- A reload that keeps every monitor on its own run moves nothing.
+do
+    local world = load(
+        { { name = "eDP-1", active = 2 }, { name = "DP-1", active = 11 } },
+        concat(range(1, 9, "eDP-1"), range(10, 18, "DP-1")),
+        { [2] = 1, [11] = 2 }
+    )
+    world.handlers["config.reloaded"]()
+
+    expect(#world.moves, 0, "windows moved by a plain reload")
+    expect(next(world.rules), nil, "rules set by a plain reload")
+end
+
 -- With no monitor left there is nowhere to gather to.
 do
     local world = load({}, range(1, 9, nil), { [1] = 1 })

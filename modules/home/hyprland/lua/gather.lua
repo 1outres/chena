@@ -39,8 +39,17 @@ local function gather(monitor)
     end
 end
 
-hl.on("monitor.removed", function()
+local function gatherAll()
     for _, monitor in ipairs(hl.get_monitors()) do
         gather(monitor)
     end
-end)
+end
+
+hl.on("monitor.removed", gatherAll)
+
+-- A reload starts Lua over, so split-monitor-workspaces forgets the run of a
+-- monitor that is off, such as the panel with the lid shut, and gives that run
+-- to a monitor that is on. Windows left on the old run are out of reach of the
+-- keys. Hyprland calls handlers in the order they were added, and init.lua
+-- loads workspaces.lua first, so this runs after the runs are given out again.
+hl.on("config.reloaded", gatherAll)
