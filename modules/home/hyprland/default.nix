@@ -38,6 +38,7 @@ let
       natural_scroll = cfg.touchpad.naturalScroll;
       scroll_factor = cfg.touchpad.scrollFactor;
       clickfinger = cfg.touchpad.clickFinger;
+      swipe_distance = cfg.touchpad.swipeDistance;
     };
     devices = lib.mapAttrs (_: device: { natural_scroll = device.naturalScroll; }) cfg.devices;
     style = {
@@ -205,6 +206,15 @@ in
           one finger is a left click, two is a right click and three is a
           middle click. When off, the click is decided by where it lands, so
           a right click needs the bottom right corner.
+        '';
+      };
+      swipeDistance = mkOption {
+        type = types.ints.positive;
+        default = 300;
+        example = 150;
+        description = ''
+          How far, in pixels, three fingers move to go one workspace over.
+          Smaller is more sensitive.
         '';
       };
     };

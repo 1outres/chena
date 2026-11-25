@@ -15,6 +15,10 @@ hl.config({
             clickfinger_behavior = settings.touchpad.clickfinger,
         },
     },
+
+    gestures = {
+        workspace_swipe_distance = settings.touchpad.swipe_distance,
+    },
 })
 
 hl.gesture({
