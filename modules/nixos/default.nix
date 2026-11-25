@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -14,7 +19,10 @@
   options.chena.enable = lib.mkEnableOption "the chena desktop";
 
   config = lib.mkIf config.chena.enable {
-    programs.hyprland.enable = true;
+    programs.hyprland = {
+      enable = true;
+      package = pkgs.callPackage ../../packages/hyprland { };
+    };
 
     # The PAM service that hyprlock checks the password with. This is not
     # programs.hyprlock, because that also starts hypridle, and Home Manager
